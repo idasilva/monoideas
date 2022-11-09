@@ -3,7 +3,63 @@ Description: Incident Manager
 
 Resources:
 
-  DigitalRunbookIncident:
+  ExemploResponsePlan:
+    Type: AWS::SSMIncidents::ResponsePlan
+    Properties:
+      Actions:
+        SsmAutomation:
+          DocumentName: !Ref ExemploRunbookIncident
+          RoleArn: !GetAtt ExemploRunbookRole.Arn
+      DisplayName: Exemplo de plano de resposta para Incidentes
+      Engagements: !Sub arn:aws:ssm-contacts:${AWS::Region}:${AWS::AccountId}:contact/Exemplo
+      IncidentTemplate:
+          Title: Novo Incidente
+          Impact: 1
+          Summary: >
+            **🔥 🔥 🔥 INCIDENTE EM PROCESSO 🔥 🔥 🔥**
+
+            **Ações:**
+            1. Siga as instruções do Runbook.
+            2. A descrição do Alarme pode te orientar na resolução do problema.
+            3. Fique calmo - não fique com medo de pedir ajuda ou escalar.
+      Name:
+
+  ExemploRunbookRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ExemploRunBookRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'ssm-incidents.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: IncidentManagerAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'ssm-incidents:*'
+                  - 'ssm-contacts:*'
+                  - 'ssm:StartAutomationExecution'
+                Resource: '*'
+
+
+  ExemploContact:
+    Type: AWS::SSMContacts::Contact
+    Properties:
+      Alias: Exemplo
+      DisplayName: Exemplo
+      Plan:
+        DurationInMinutes: 1
+      Type: PERSONAL
+
+  ExemploRunbookIncident:
     Type: AWS::SSM::Document
     Properties:
       Content:
