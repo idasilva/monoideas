@@ -1,47 +1,47 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
+	"context"
 	"fmt"
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	a "github.com/idasilva/goserverless/lambda/aws"
-	"github.com/idasilva/goserverless/lambda/types"
-	"github.com/sirupsen/logrus"
-	"net/http"
+	"github.com/aws/aws-lambda-go/lambdacontext"
+	"github.com/idasilva/aws-serverless/lambda/app/exemplo"
+	"github.com/idasilva/aws-serverless/lambda/pkg/common"
+	"github.com/idasilva/aws-serverless/lambda/pkg/types"
+	"log"
 )
 
-func handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	event := types.Event{}
+// Resource represents an AWS resource.
+type Resource interface {
+	handler(ctx context.Context, event *types.Event) (*types.Event,error)
+}
 
-	logrus.Infof("log request info... %v", r.Body)
+// Manager handler execution context of LAMBDA
+type Manager struct {
+	exemplo.Exemplo
+}
 
-	err := json.Unmarshal([]byte(r.Body), &event)
-	if err != nil {
-		return &events.APIGatewayProxyResponse{
-			StatusCode: http.StatusUnprocessableEntity,
-			Body:       errors.New(fmt.Sprintf("parse request fail.. %v", err.Error())).Error(),
-		}, err
+/*handler
+Invoke lambda function local ./events/exemplo.json, to do this use SAM.
+*/
+func (m *Manager) handler(ctx context.Context, event *types.Event) (*types.Event,error) {
+	fmt.Sprintf("context: [data=%v]", common.JSON(event))
+
+	_, err := m.POST(ctx, event.Request, &event.Response)
+	if err != nil{
+		return nil,err
 	}
 
-	d := a.NewDynamoDB()
+	log.Printf("finished: [data=%v]", event)
 
-	err = d.Execute(event)
-	if err != nil {
-		return &events.APIGatewayProxyResponse{
-			StatusCode: 422,
-			Body:       errors.New(fmt.Sprintf("execute operations on dynamo fail.. %v", err.Error())).Error(),
-		}, err
-	}
-
-	return &events.APIGatewayProxyResponse{
-		StatusCode: 200,
-		Body:       "request complete with success !!....",
-	}, nil
-
+	return  event, nil
 }
 
 func main() {
-	lambda.Start(handler)
+	d := Manager{}
+	lambda.Start(func(ctx context.Context, event *types.Event) (*types.Event,error){
+		lc, _ := lambdacontext.FromContext(ctx)
+		fmt.Printf("[lambda-request-id=%s] ", lc.AwsRequestID)
+		return d.handler(ctx, event)
+	})
 }

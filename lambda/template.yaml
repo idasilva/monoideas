@@ -1,0 +1,19 @@
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  SAM Definitions
+
+Globals:
+  Function:
+    Handler: main
+    Runtime: go1.x
+    Timeout: 900
+    Tracing: Active
+
+Resources:
+
+  ExemploFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: exemplo-function
+      CodeUri: ./
