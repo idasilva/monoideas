@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Incident Manager
+
+Resources:
+
+  DigitalRunbookIncident:
+    Type: AWS::SSM::Document
+    Properties:
+      Content:
+        description: "Esse documento foi criado para ser um guia de incidente."
+        schemaVersion: '0.3'
+        mainSteps:
+          - name: Inicio
+            action: 'aws:pause'
+            inputs: { }
+            description: |-
+              **Iniciar análise do Incidente**
+
+              * Para ajudar nas métricas e também auxiliar quem está acompanhando o Incidente é necessário fazer um primeiro registro de atividade
+              na aba de Timeline, exemplo de descrição: **"Análise está sendo processada."**
+              * Após isso, clique em Resumo para seguir com a próxima etapa do Incidente.
+
+          - name: TipoDeAlarme
+            action: 'aws:pause'
+            inputs: { }
+            description: |-
+              *Antes de começar a diagnosticar o problema, lembre-se de se atentar a observação do Alarme no sumario, isso pode
+              te direcionar a selecionar os melhores aterfatos para diagnosticar o problema.
+
+              **Tipos de alarmes e documentação**
+
+          - name: Diagnostico
+            action: 'aws:pause'
+            inputs: { }
+            description: |-
+              **Diagnostico do problema**
+
+              * Visualize a guia Métricas do incidente ou navegue até seus CloudWatch Dashboards para encontrar
+              os principais indicadores de desempenho (KPIs) que mostram a extensão do impacto no cliente.
+
+              * Use o CloudWatch Logs Insights para identificar falhas em tempo real nos fluxos de trabalho do cliente.
+                * Detro do CloudWatch Logs Insights podemos executar algumas consultas já preparadas para não perdermos
+                  muito tempo na análise:
+
+              * Use o Kibana para efetuar consultas para se aprofundar no problema.
+                * Com o Kibana temos diversos Dashboards que podem nos auxiliar nas análises
+
+
+              * Procure alterações recentes no ambiente de produção que possam ter causado o incidente.
+                - Para visualizar se foi feito algum deploy no dia do incidente podemos verificar no github na parte
+                  de releases, ou também podemos ver no canal de releases.
+
+              * Verifique incidentes e problemas conhecidos na AWS usando o [Personal Health Dashboard]
+                - As vezes o problema não foi causado pela equipe ou pelo cliente, pode ser alguma atualização
+                  ou impacto quando estamos falando da Cloud.
+
+              * Evite ir muito fundo no diagnóstico da falha e concentre-se em como mitigar o impacto no cliente.
+                Atualize a guia **Linha do tempo** do incidente quando um possível diagnóstico for identificado.
+
+          - name: Impacto
+            action: 'aws:pause'
+            inputs: { }
+            description: |
+              **Determinar o impacto no cliente**
+
+              Atualize os seguintes campos para descrever com precisão o incidente::
+              * **Title** - O título deve ser rapidamente reconhecível pela equipe e específico para o incidente
+              em particular, seguir o padrão: [Data][Hora] - [Descrição].
+
+                Exemplo de descrição: 06/11/22 14:00 - Muitas solicitação APIS
+              * **Summary** - O resumo deve conter as informações mais importantes e atualizadas para integrar rapidamente
+              novos socorristas ao incidente.
+
+              * **Impact** - Selecione uma das seguintes classificações de impacto para descrever o incidente:
+                * 1 – Critical impact, falha total do aplicativo que afeta muitos a todos os clientes.
+                * 2 – High impact, Falha parcial do aplicativo de alto impacto com impacto para muitos clientes.
+                * 3 – Medium impact, o aplicativo está prestando serviço reduzido a muitos clientes.
+                * 4 – Low impact,o aplicativo está prestando serviço reduzido a poucos clientes.
+                * 5 – No impact, os clientes não são impactados no momento, mas é necessária uma ação urgente para evitar o impacto.
+
+          - name: Mitigacao
+            action: 'aws:pause'
+            description: |-
+              **Mitigrar problema**
+              * Exemplo: foi identifado um bug no ultimo deploy, então reverta essas alterações, se possível em conjunto com o time.
+            inputs: { }
+
+          - name: Documentar
+            action: 'aws:pause'
+            inputs: { }
+            description: |-
+              **Documente o Incidente**
+              * Criação de um Card no Jira para documentar o Incidente.
+      DocumentType: Automation
