@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Incident Manager
+
+Resources:
+
+  ExemploRunbookIncident:
+    Type: AWS::SSM::Document
+    Properties:
+      Content:
+        description: "\n\U0001F525 \U0001F525 \U0001F525** Esse Documento foi criado para fazermos análises quando a conversão das APIS estiverem muito baixa**\U0001F525 \U0001F525 \U0001F525\n\nAções:\n\nSiga as instruções do Runbook.\n\nA descrição do Alarme pode te orientar na resolução do problema.\n\nFique calmo - não fique com medo de pedir ajuda ou escalar."
+        schemaVersion: '0.3'
+        mainSteps:
+          - name: Dashs
+            action: 'aws:pause'
+            description: |+
+              Podemos visualizar algumas métricas através dos nossos dashs:
+  
+              - [*Dash 1*]
+              - [*Dash 2*]
+              - [*Dash 3*]
+              - [*Dash 4*]
+              - [*Dash 5*]
+
+            inputs: { }
+      DocumentType: Automation

@@ -1,0 +1,94 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "ListFunctions",
+  "States": {
+    "ListFunctions": {
+      "Type": "Task",
+      "Parameters": {},
+      "Resource": "arn:aws:states:::aws-sdk:lambda:listFunctions",
+      "Next": "Map",
+      "ResultPath": "$.Resources"
+    },
+    "Map": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "ListTags",
+        "States": {
+          "ListTags": {
+            "Type": "Task",
+            "Parameters": {
+              "Resource.$": "$.Function.FunctionArn"
+            },
+            "Resource": "arn:aws:states:::aws-sdk:lambda:listTags",
+            "Next": "Choice",
+            "ResultPath": "$.Input.Lambda",
+            "ResultSelector": {
+              "Tags.$": "$.Tags"
+            }
+          },
+          "Choice": {
+            "Type": "Choice",
+            "Choices": [
+              {
+                "And": [
+                  {
+                    "Variable": "$.Input.Lambda",
+                    "IsPresent": true
+                  },
+                  {
+                    "Variable": "$.Input.Lambda.Tags.Environment",
+                    "IsPresent": true
+                  },
+                  {
+                    "Variable": "$.Input.Lambda.Tags.Integration",
+                    "IsPresent": true
+                  },
+                  {
+                    "Variable": "$.Input.Lambda.Tags.Integration",
+                    "StringEqualsPath": "$.Input.Integration"
+                  },
+                  {
+                    "Variable": "$.Input.Lambda.Tags.Environment",
+                    "StringEqualsPath": "$.Input.Environment"
+                  }
+                ],
+                "Next": "lambda - update"
+              }
+            ],
+            "Default": "success - update"
+          },
+          "lambda - update": {
+            "Type": "Task",
+            "Parameters": {
+              "FunctionName.$": "$.Function.FunctionName",
+              "VpcConfig": {
+                "SubnetIds.$": "States.Array($.Input.Network)"
+              }
+            },
+            "Resource": "arn:aws:states:::aws-sdk:lambda:updateFunctionConfiguration",
+            "Next": "success - update"
+          },
+          "success - update": {
+            "Type": "Succeed"
+          }
+        }
+      },
+      "ItemsPath": "$.Resources.Functions",
+      "Next": "success - configuration",
+      "ItemSelector": {
+        "Function.$": "$$.Map.Item.Value",
+        "Input": {
+          "Environment.$": "$.Environment",
+          "Integration.$": "$.Integration",
+          "Network.$": "$.Network"
+        }
+      }
+    },
+    "success - configuration": {
+      "Type": "Succeed"
+    }
+  }
+}

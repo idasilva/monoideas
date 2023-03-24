@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Incident Manager
+
+Resources:
+
+  ExemploRunbookIncident:
+    Type: AWS::SSM::Document
+    Properties:
+      Content:
+        description: "**\U0001F525 \U0001F525 \U0001F525 Documento de automação para resolver problemas de rede.\U0001F525 \U0001F525 \U0001F525**\n\n**Ações:**                         \n\n1. Siga as instruções do Runbook.\n\n2. A descrição do Alarme pode te orientar na resolução do problema.\n\n\n3. Fique calmo - não fique com medo de pedir ajuda ou escalar."
+        schemaVersion: '0.3'
+        parameters:
+          Integration:
+            type: String
+            allowedValues:
+              - on-premises
+            description: Esse parâmetro indica quais são os tipos de componentes que devem ser mudados.
+          Environment:
+            type: String
+            allowedValues:
+              - prod
+              - stage
+              - dev
+            description: Esse parâmetro indica qual ambiente deve ser mudado.
+          Network:
+            type: String
+            allowedValues:
+              - subnet-a
+              - subnet-b
+              - subnet-c
+            description: "Esses valores de Subnet abaixo indicam qual será a rede target dos componentes AWS que tiverem as tags  *Environment* e *Integration* associadas: (subnet-a\t, VPN-A).  (subnet-b, VPN-b).  (subnet-c, VPN-c)."
+        mainSteps:
+          - name: Alarmes
+            action: 'aws:pause'
+            inputs: { }
+            description: |-
+              Esse documento de automação foi criado para automatizar o processo de mudança de rede nos componentes orquestrados pela AWS. Verifique se o alarme está relacionado a esse tipo de problema.
+                 - Tipos de alarmes e documentação:
+                    - *ALARME 1*
+                    - *ALARME 2*
+                    - *ALARME 3*
+                    - *ALARME 4*
+              Se o alarme que estiver analisando não estiver na lista, considere tomar outra abordagem e não execute esse script.
+          - name: Diagnostico
+            action: 'aws:pause'
+            inputs: { }
+            description: |2-
+               **Diagnostico do problema**
+            
+               * Visualize a guia Métricas do incidente ou navegue até seus CloudWatch Dashboards para encontrar
+                            os principais indicadores de desempenho (KPIs) que mostram a extensão do impacto no cliente.
+              * Use o CloudWatch Logs Insights para identificar falhas em tempo real nos fluxos de trabalho do cliente.
+              * Detro do CloudWatch Logs Insights podemos executar algumas consultas já preparadas para não perdermos
+                                muito tempo na análise:
+              * Use o Kibana para efetuar consultas para se aprofundar no problema.
+              * Com o Kibana temos diversos Dashboards que podem nos auxiliar nas análises
+              * Procure alterações recentes no ambiente de produção que possam ter causado o incidente.
+                   - Para visualizar se foi feito algum deploy no dia do incidente podemos verificar no github na parte
+                                de releases, ou também podemos ver no canal de releases.
+              * Verifique incidentes e problemas conhecidos na AWS usando o [Personal Health Dashboard]
+                   - As vezes o problema não foi causado pela equipe ou pelo cliente, pode ser alguma atualização
+                     ou impacto quando estamos falando da Cloud.
+          - name: Mitigacao
+            action: 'aws:pause'
+            inputs: { }
+            description: |2-
+               **Mitigrar problema**
+            
+              -  *X* : Utilize a rota A
+              -  *Y*: Utilize a rota B
+          - name: Applications
+            action: 'aws:executeStateMachine'
+            inputs:
+              stateMachineArn: 'arn:aws:states:{REGION-ID}:{ACCOUNT-ID}:stateMachine:Automation'
+              input: '{   "Integration": "{{Integration}}",   "Environment": "{{Environment}}", "Network": "{{Network}}"}'
+            description: Essa etapa do processo irá chamada um workflow que irá lista todas as Lambda da conta e filtra pelas Tags *Integration* and *Environment*.  O mesmo irá usa do parâmetro de Subnet passado no documento para alterar as Lambdas para uma nova Network.
+      DocumentType: Automation
