@@ -1,0 +1,121 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "process-data",
+  "States": {
+    "process-data": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:560978416398:function:data-proccess-etl-job:$LATEST",
+        "Payload.$": "$"
+      },
+      "Next": "File Archive",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Comment": "errors",
+          "Next": "fail",
+          "ResultPath": "$.errors"
+        }
+      ],
+      "ResultPath": "$.data",
+      "ResultSelector": {
+        "payload.$": "$.Payload"
+      }
+    },
+    "File Archive": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "DISTRIBUTED",
+          "ExecutionType": "EXPRESS"
+        },
+        "StartAt": "insight-data",
+        "States": {
+          "insight-data": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::lambda:invoke",
+            "OutputPath": "$.Payload",
+            "Parameters": {
+              "Payload.$": "$",
+              "FunctionName": "arn:aws:lambda:us-east-1:560978416398:function:data-insights-etl-job:$LATEST"
+            },
+            "Next": "Map"
+          },
+          "Map": {
+            "Type": "Map",
+            "ItemProcessor": {
+              "ProcessorConfig": {
+                "Mode": "INLINE"
+              },
+              "StartAt": "persist-data",
+              "States": {
+                "persist-data": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::lambda:invoke",
+                  "OutputPath": "$.Payload",
+                  "Parameters": {
+                    "Payload.$": "$",
+                    "FunctionName": "arn:aws:lambda:us-east-1:560978416398:function:data-persistent-etl-job:$LATEST"
+                  },
+                  "Catch": [
+                    {
+                      "ErrorEquals": [
+                        "States.ALL"
+                      ],
+                      "Comment": "errors",
+                      "Next": "fail-persist",
+                      "ResultPath": "$.errors"
+                    }
+                  ],
+                  "Next": "success-persist"
+                },
+                "success-persist": {
+                  "Type": "Succeed"
+                },
+                "fail-persist": {
+                  "Type": "Fail"
+                }
+              }
+            },
+            "ItemsPath": "$.datas",
+            "End": true
+          }
+        }
+      },
+      "ItemReader": {
+        "Resource": "arn:aws:states:::s3:getObject",
+        "ReaderConfig": {
+          "InputType": "JSON"
+        },
+        "Parameters": {
+          "Bucket.$": "$.data.payload.body.bucket",
+          "Key.$": "$.data.payload.body.key"
+        }
+      },
+      "Label": "FileArchive",
+      "Next": "success",
+      "ResultWriter": {
+        "Resource": "arn:aws:states:::s3:putObject",
+        "Parameters": {
+          "Bucket": "chaitan-poc-result-v2",
+          "Prefix": "results"
+        }
+      },
+      "Comment": "1223",
+      "ItemBatcher": {
+        "MaxInputBytesPerBatch": 262144,
+        "MaxItemsPerBatch": 10
+      },
+      "ToleratedFailurePercentage": 30
+    },
+    "fail": {
+      "Type": "Fail"
+    },
+    "success": {
+      "Type": "Succeed"
+    }
+  }
+}

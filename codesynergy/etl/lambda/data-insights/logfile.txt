@@ -1,0 +1,4 @@
+START RequestId: 55090415-4d11-416d-a78d-a77b985842df Version: $LATEST
+[ERROR] Runtime.ImportModuleError: Unable to import module 'app': No module named 'pandas'Traceback (most recent call last):
+{"errorMessage": "Unable to import module 'app': No module named 'pandas'", "errorType": "Runtime.ImportModuleError", "requestId": "55090415-4d11-416d-a78d-a77b985842df", "stackTrace": []}END RequestId: 55090415-4d11-416d-a78d-a77b985842df
+REPORT RequestId: 55090415-4d11-416d-a78d-a77b985842df	Init Duration: 0.37 ms	Duration: 707.32 ms	Billed Duration: 708 ms	Memory Size: 10240 MB	Max Memory Used: 10240 MB	

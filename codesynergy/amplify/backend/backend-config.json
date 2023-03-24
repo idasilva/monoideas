@@ -1,0 +1,43 @@
+{
+  "api": {
+    "dtarchive": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "etlserverless"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "function": {
+    "etlserverless": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_etlserverless_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "etlserverless"
+        }
+      ]
+    },
+    "AMPLIFY_function_etlserverless_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "etlserverless"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "paths": {
+    "/list/org/data/{id}": {
+      "name": "/list/org/data/{id}",
+      "lambdaFunction": "etlserverless",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/list/org/projects/{id}": {
+      "name": "/list/org/projects/{id}",
+      "lambdaFunction": "etlserverless",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/list/org/{orgid}/project/{repoid}/prs": {
+      "name": "/list/org/{orgid}/project/{repoid}/prs",
+      "lambdaFunction": "etlserverless",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/list/project/{id}/prs/data": {
+      "name": "/list/project/{id}/prs/data",
+      "lambdaFunction": "etlserverless",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/list/project/{id}/issues/data": {
+      "name": "/list/project/{id}/issues/data",
+      "lambdaFunction": "etlserverless",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/list/project/{id}/additional/data": {
+      "name": "/list/project/{id}/additional/data",
+      "lambdaFunction": "etlserverless",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  data-insights
+
+  SAM Template
+
+Globals:
+  Function:
+    Timeout: 900
+    Tracing: Active
+
+
+Resources:
+  DataInsigthsETLFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName:  data-insights-etl-job
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      MemorySize: 10240
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Tags:
+        Todo: proccess-data
+
+Outputs:
+  DataInsigthsETLFunction:
+    Description: "DataInsigthsETLFunction ARN"
+    Value: !GetAtt DataInsigthsETLFunction.Arn

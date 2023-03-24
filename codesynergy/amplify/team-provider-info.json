@@ -1,0 +1,26 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplify2dbe7c18e54e4-staging-34155-authRole",
+      "UnauthRoleArn": "arn:aws:iam::560978416398:role/amplify-amplify2dbe7c18e54e4-staging-34155-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::560978416398:role/amplify-amplify2dbe7c18e54e4-staging-34155-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-amplify2dbe7c18e54e4-staging-34155-deployment",
+      "UnauthRoleName": "amplify-amplify2dbe7c18e54e4-staging-34155-unauthRole",
+      "StackName": "amplify-amplify2dbe7c18e54e4-staging-34155",
+      "StackId": "arn:aws:cloudformation:us-east-1:560978416398:stack/amplify-amplify2dbe7c18e54e4-staging-34155/a9a230f0-c475-11ed-8afc-12a88ed0865d",
+      "AmplifyAppId": "d1mckejv41f1ov"
+    },
+    "categories": {
+      "function": {
+        "etlserverless": {
+          "deploymentBucketName": "amplify-amplify2dbe7c18e54e4-staging-34155-deployment",
+          "s3Key": "amplify-builds/etlserverless-54303048477970747867-build.zip"
+        }
+      },
+      "api": {
+        "dtarchive": {}
+      }
+    }
+  }
+}

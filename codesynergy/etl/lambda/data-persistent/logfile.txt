@@ -1,0 +1,4 @@
+START RequestId: 8a8aa1fc-454b-4163-ac5c-c38cd13d7e6b Version: $LATEST
+END RequestId: 8a8aa1fc-454b-4163-ac5c-c38cd13d7e6b
+REPORT RequestId: 8a8aa1fc-454b-4163-ac5c-c38cd13d7e6b	Init Duration: 0.71 ms	Duration: 2425.72 ms	Billed Duration: 2426 ms	Memory Size: 128 MB	Max Memory Used: 128 MB	
+{"statusCode": 200, "body": "{\"message\": \"data OK\"}"}

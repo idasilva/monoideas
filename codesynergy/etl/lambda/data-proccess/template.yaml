@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  data-persistent
+
+  SAM Template
+
+Globals:
+  Function:
+    Timeout: 900
+    Tracing: Active
+
+
+Resources:
+  DataProcessETLFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      FunctionName:  data-proccess-etl-job
+      CodeUri: hello_world/
+      Handler: app.lambda_handler
+      MemorySize: 10240
+      Runtime: python3.9
+      Architectures:
+      - x86_64
+      Tags:
+        Todo: proccess-data
+
+Outputs:
+  DataPersistentETLFunction:
+    Description: "DataPersistentETLFunction ARN"
+    Value: !GetAtt DataPersistentETLFunction.Arn
