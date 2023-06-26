@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description:
+  This stack is responsable to deploy a new site to site VPC simulation
+
+Resources:
+
+############################################################################
+##    ON-PREMISE SIDE
+############################################################################
+  VPCOnpremise:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 192.168.0.0/16
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      Tags:
+        - Key: side
+          Value: on-premises
+
+  OpenswanDefaultPublicSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPCOnpremise
+      CidrBlock: 192.168.0.0/24
+
+  OpenswanOnpremise:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-022e1a32d3f742bd8
+      InstanceType: t2.micro
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          GroupSet:
+            - !Ref OpenswanSGOnpremises
+          SourceDestCheck: false
+          SubnetId: !Ref OpenswanDefaultPublicSubnet
+      KeyName: 'OpenswanKey'
+      Tags:
+        - Key: side
+          Value: on-premises
+
+  OpenswanSGOnpremises:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: EC2SecurityGroup
+      VpcId: !Ref VPCOnpremise
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+
+
+############################################################################
+##    AWS SIDE
+############################################################################
+  VPCAWS:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      Tags:
+        - Key: side
+          Value: awscloud
+
+  VPCPublicSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPCAWS
+      CidrBlock: 10.0.0.0/24
+
+  AppAWS:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-022e1a32d3f742bd8
+      InstanceType: t2.micro
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          GroupSet:
+            - !Ref AppSGAWS
+          SubnetId: !Ref VPCPublicSubnet
+      KeyName: 'AppKey'
+      Tags:
+        - Key: side
+          Value: awscloud
+
+  AppSGAWS:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: EC2SecurityGroup
+      VpcId: !Ref VPCAWS
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  OpenswanOnpremiseOutput:
+    Description: The name of the created EC2 instance in the AWS East region.
+    Value: !Ref OpenswanOnpremise
+
+  OpenswanSGOnpremisesOutput:
+    Description: The name of the created EC2 security group in the AWS East region.
+    Value: !Ref OpenswanSGOnpremises
+
+  AppAWSOutput:
+    Description: The name of the created EC2 instance in the AWS East region.
+    Value: !Ref OpenswanOnpremise
+
+  AppSGAWSOutput:
+    Description: The name of the created EC2 security group in the AWS East region.
+    Value: !Ref AppSGAWS
