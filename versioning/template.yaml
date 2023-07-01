@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sam-app
+  
+  Sample SAM Template for sam-app
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - stage
+      - prod
+    Description: this parameter is use to define the environment
+
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 128
+    Tracing: Active
+  Api:
+    TracingEnabled: True
+
+Resources:
+  DemoVersioningFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: demo-versioning
+      CodeUri: ./resources/lambda/sam-app
+      Handler: hello-world
+      Runtime: go1.x
+      AutoPublishAlias: !Ref Environment
+      DeploymentPreference:
+        Type: Linear10PercentEvery3Minutes
+      Architectures:
+        - x86_64
+#      Events:
+#        CatchAll:
+#          Type: Api
+#          Properties:
+#            Path: /hello
+#            Method: GET
+      Environment:
+        Variables:
+          PARAM1:  NOVA VERSÃO
+
+
+  DemoVersioningLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/events/${AWS::StackName}-stm'
+
+  DemoVersioningStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Type: STANDARD
+      Name: demo-statemachine-versioning
+      DefinitionUri: resources/stepfunction/statemachine-versioning.asl.json
+      Role: !GetAtt DemoVersioningMachineExecutionRole.Arn
+      DefinitionSubstitutions:
+        LambdaName: !GetAtt DemoVersioningFunction.Arn
+      Tracing:
+        Enabled: true
+      Logging:
+        Destinations:
+          - CloudWatchLogsLogGroup:
+              LogGroupArn: !GetAtt DemoVersioningLogGroup.Arn
+        IncludeExecutionData: true
+        Level: 'ALL'
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: GET
+
+  DemoStatemachineAlias:
+    Type: AWS::StepFunctions::StateMachineAlias
+    Properties:
+      Name: prod
+      DeploymentPreference:
+        StateMachineVersionArn: !Ref DemoVersioningStateMachine
+
+  DemoVersioningMachineExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}-${AWS::Region}-statemachine-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AWSXRayDaemonWriteAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'xray:PutTraceSegments'
+                  - 'xray:PutTelemetryRecords'
+                  - 'xray:GetSamplingRules'
+                  - 'xray:GetSamplingTargets'
+                  - 'xray:GetSamplingStatisticSummaries'
+                Resource: '*'
+        - PolicyName: AllowCloudWatchAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:*'
+                  - 'cloudwatch:*'
+                Resource:
+                  - "*"
+        - PolicyName: AllowInvokeFunctions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: lambda:InvokeFunction
+                Resource:
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:demo-versioning'
+
+Outputs:
+  HelloWorldAPI:
+    Description: "API Gateway endpoint URL for Prod environment for First Function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev/hello/"
+  HelloWorldFunction:
+    Description: "First Lambda Function ARN"
+    Value: !GetAtt DemoVersioningFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt DemoVersioningFunction.Arn
