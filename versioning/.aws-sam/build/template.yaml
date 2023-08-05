@@ -1,0 +1,245 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'sam-app
+
+  Sample SAM Template for sam-app
+
+  '
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+    - dev
+    - stage
+    - prod
+    Description: this parameter is use to define the environment
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 128
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name:
+        Fn::Sub: poc-versioning-${Environment}
+      StageName:
+        Ref: Environment
+      CacheClusterEnabled: true
+      CacheClusterSize: '0.5'
+      OpenApiVersion: '2.0'
+      DefinitionBody:
+        swagger: '2.0'
+        info:
+          title: API Versioning definitions
+        paths:
+          /v1/version:
+            get:
+              consumes:
+              - application/json
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                '400':
+                  description: 400 response
+                '500':
+                  description: 500 response
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:states:action/StartSyncExecution
+                credentials:
+                  Fn::Sub: arn:aws:iam::560978416398:role/MyApiGatewayRole
+                requestTemplates:
+                  application/json:
+                    Fn::Sub: '{
+
+                      "input": "$util.escapeJavaScript($input.json(''$''))",
+
+                      "stateMachineArn": "arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:demo-statemachine-versioning-express-${Environment}"
+
+                      }'
+                passthroughBehavior: when_no_match
+                responses:
+                  '200':
+                    statusCode: '200'
+                    responseTemplates:
+                      application/json: "{\n \"data\": $util.parseJson($input.json('$.output'))\n\
+                        }"
+                  '400':
+                    statusCode: '400'
+                    responseTemplates:
+                      application/json: "{\n \"data\": $util.parseJson($input.json('$.output'))\n\
+                        }"
+                  '500':
+                    statusCode: '500'
+                    responseTemplates:
+                      application/json: "{\n \"data\": $util.parseJson($input.json('$.output'))\n\
+                        }"
+        TracingEnabled: true
+  ApiGatewayApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: MyApiGatewayRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - apigateway.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: StepFunctionInvokePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - states:StartSyncExecution
+            Resource:
+            - Fn::Sub: arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:demo-statemachine-versioning-express-${Environment}
+  DemoVersioningFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: demo-versioning-${Environment}
+      CodeUri: DemoVersioningFunction
+      Handler: hello-world
+      Runtime: go1.x
+      AutoPublishAlias:
+        Ref: Environment
+      DeploymentPreference:
+        Type: AllAtOnce
+      Architectures:
+      - x86_64
+    Metadata:
+      SamResourceId: DemoVersioningFunction
+  DemoVersioningLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName:
+        Fn::Sub: /aws/events/${AWS::StackName}-stm
+  DemoVersioningStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Type: EXPRESS
+      Name:
+        Fn::Sub: demo-statemachine-versioning-express-${Environment}
+      DefinitionUri: ../../resources/stepfunction/statemachine-versioning.asl.json
+      Role:
+        Fn::GetAtt:
+        - DemoVersioningMachineExecutionRole
+        - Arn
+      DefinitionSubstitutions:
+        LambdaName:
+          Fn::GetAtt:
+          - DemoVersioningFunction
+          - Arn
+      Tracing:
+        Enabled: true
+      Logging:
+        Destinations:
+        - CloudWatchLogsLogGroup:
+            LogGroupArn:
+              Fn::GetAtt:
+              - DemoVersioningLogGroup
+              - Arn
+        IncludeExecutionData: true
+        Level: ALL
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /v1/version
+            Method: GET
+            RestApiId:
+              Ref: ApiGatewayApi
+      Tags:
+        StatemachineType: express
+  MyStateMachineVersion:
+    Type: AWS::StepFunctions::StateMachineVersion
+    Properties:
+      Description: Version referencing
+      StateMachineArn:
+        Ref: DemoVersioningStateMachine
+      StateMachineRevisionId:
+        Fn::GetAtt:
+        - DemoVersioningStateMachine
+        - StateMachineRevisionId
+  DemoStatemachineAlias:
+    Type: AWS::StepFunctions::StateMachineAlias
+    Properties:
+      Name:
+        Fn::Sub: ${Environment}
+      DeploymentPreference:
+        StateMachineVersionArn:
+          Ref: MyStateMachineVersion
+        Type: ALL_AT_ONCE
+  DemoVersioningMachineExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${AWS::StackName}-${AWS::Region}-statemachine-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: states.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: AWSXRayDaemonWriteAccess
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - xray:PutTraceSegments
+            - xray:PutTelemetryRecords
+            - xray:GetSamplingRules
+            - xray:GetSamplingTargets
+            - xray:GetSamplingStatisticSummaries
+            Resource: '*'
+      - PolicyName: AllowCloudWatchAccess
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            - cloudwatch:*
+            Resource:
+            - '*'
+      - PolicyName: AllowInvokeFunctions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: lambda:InvokeFunction
+            Resource:
+            - Fn::Sub: arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:demo-versioning-${Environment}
+Outputs:
+  HelloWorldAPI:
+    Description: API Gateway endpoint URL for Prod environment for First Function
+    Value:
+      Fn::Sub: https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/v1/version
+  HelloWorldFunction:
+    Description: First Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - DemoVersioningFunction
+      - Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - DemoVersioningFunction
+      - Arn

@@ -2,10 +2,10 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "sam-app"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-bkvmecosh2wv"
-s3_prefix = "sam-app"
-region = "us-east-1"
+stack_name = "poc-versioning-dev"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-2xveyzrdgndl"
+s3_prefix = "poc-versioning-dev"
+region = "sa-east-1"
 capabilities = "CAPABILITY_NAMED_IAM"
 image_repositories = []
-parameter_overrides = "Environment=\"prod\""
+parameter_overrides = "Environment=\"dev\""

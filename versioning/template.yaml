@@ -23,28 +23,106 @@ Globals:
     TracingEnabled: True
 
 Resources:
+
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub poc-versioning-${Environment}
+      StageName: !Ref Environment
+      CacheClusterEnabled: true
+      CacheClusterSize: '0.5'
+      OpenApiVersion: '2.0' ## removing default stage
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: API Versioning definitions
+        paths:
+          /v1/version:
+            get:
+              consumes:
+                - "application/json"
+              produces:
+                - "application/json"
+              responses:
+                "200":
+                  description: "200 response"
+                "400":
+                  description: "400 response"
+                "500":
+                  description: "500 response"
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:states:action/StartSyncExecution"
+                credentials: !Sub "arn:aws:iam::560978416398:role/MyApiGatewayRole"
+                requestTemplates:
+                  application/json: !Sub |-
+                    {
+                    "input": "$util.escapeJavaScript($input.json('$'))",
+                    "stateMachineArn": "arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:demo-statemachine-versioning-express-${Environment}"
+                    }
+                passthroughBehavior: "when_no_match"
+                responses:
+                  "200":
+                    statusCode: "200"
+                    responseTemplates:
+                      application/json: |-
+                       {
+                        "data": $util.parseJson($input.json('$.output'))
+                       }
+                  "400":
+                    statusCode: "400"
+                    responseTemplates:
+                      application/json: |-
+                        {
+                         "data": $util.parseJson($input.json('$.output'))
+                        }
+                  "500":
+                    statusCode: "500"
+                    responseTemplates:
+                      application/json: |-
+                        {
+                         "data": $util.parseJson($input.json('$.output'))
+                        }
+        TracingEnabled: true
+
+
+  ApiGatewayApiRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: MyApiGatewayRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: StepFunctionInvokePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - states:StartSyncExecution
+                Resource:
+                  - !Sub  arn:aws:states:${AWS::Region}:${AWS::AccountId}:stateMachine:demo-statemachine-versioning-express-${Environment}
+
   DemoVersioningFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: demo-versioning
-      CodeUri: ./resources/lambda/sam-app
+      FunctionName: !Sub demo-versioning-${Environment}
+      CodeUri: ./resources/lambda/sam-app/hello-world
       Handler: hello-world
       Runtime: go1.x
       AutoPublishAlias: !Ref Environment
       DeploymentPreference:
-        Type: Linear10PercentEvery3Minutes
+        Type: AllAtOnce
       Architectures:
         - x86_64
-#      Events:
-#        CatchAll:
-#          Type: Api
-#          Properties:
-#            Path: /hello
-#            Method: GET
-      Environment:
-        Variables:
-          PARAM1:  NOVA VERSÃO
-
 
   DemoVersioningLogGroup:
     Type: AWS::Logs::LogGroup
@@ -54,8 +132,8 @@ Resources:
   DemoVersioningStateMachine:
     Type: AWS::Serverless::StateMachine
     Properties:
-      Type: STANDARD
-      Name: demo-statemachine-versioning
+      Type: EXPRESS
+      Name: !Sub demo-statemachine-versioning-express-${Environment}
       DefinitionUri: resources/stepfunction/statemachine-versioning.asl.json
       Role: !GetAtt DemoVersioningMachineExecutionRole.Arn
       DefinitionSubstitutions:
@@ -72,15 +150,30 @@ Resources:
         CatchAll:
           Type: Api
           Properties:
-            Path: /hello
+            Path: /v1/version
             Method: GET
+            RestApiId:
+              Ref: ApiGatewayApi
+      Tags:
+        StatemachineType: express
+
+
+  MyStateMachineVersion:
+    Type: AWS::StepFunctions::StateMachineVersion
+    Properties:
+      Description: Version referencing
+      StateMachineArn: !Ref DemoVersioningStateMachine
+      StateMachineRevisionId: !GetAtt DemoVersioningStateMachine.StateMachineRevisionId
 
   DemoStatemachineAlias:
     Type: AWS::StepFunctions::StateMachineAlias
     Properties:
-      Name: prod
+      Name: !Sub ${Environment}
       DeploymentPreference:
-        StateMachineVersionArn: !Ref DemoVersioningStateMachine
+        StateMachineVersionArn: !Ref MyStateMachineVersion
+        Type: ALL_AT_ONCE
+#        Interval: 5
+#        Percentage: 20
 
   DemoVersioningMachineExecutionRole:
     Type: AWS::IAM::Role
@@ -123,12 +216,12 @@ Resources:
               - Effect: Allow
                 Action: lambda:InvokeFunction
                 Resource:
-                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:demo-versioning'
+                  - !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:demo-versioning-${Environment}'
 
 Outputs:
   HelloWorldAPI:
     Description: "API Gateway endpoint URL for Prod environment for First Function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/dev/hello/"
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/v1/version"
   HelloWorldFunction:
     Description: "First Lambda Function ARN"
     Value: !GetAtt DemoVersioningFunction.Arn
