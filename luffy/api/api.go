@@ -1,22 +1,27 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type API struct {
-	engine *gin.Engine
+	mux    *gin.Engine
+	routes *Routes
 }
 
 func (a *API) Server() error {
-	return a.engine.Run()
+	a.mux.Handlers = a.routes.Route
+	return a.mux.Run()
 }
 
-func (a *API) Routes(handlerFunc gin.HandlerFunc) {
-
+func (a *API) Handlers(loadPaths func() []gin.HandlerFunc) {
+	a.routes.Add(loadPaths)
 }
 
 func NewContext() *API {
 	return &API{
-		engine: gin.Default(),
+		mux:    gin.Default(),
+		routes: NewRoutes(),
 	}
 
 }

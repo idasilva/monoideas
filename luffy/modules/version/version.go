@@ -7,7 +7,26 @@ import (
 )
 
 func Init(api *api.API) {
-	api.Routes(func(c *gin.Context) {
+
+	api.Handlers(func() []gin.HandlerFunc {
+
+		return []gin.HandlerFunc{
+
+			func(ctx *gin.Context) {
+
+			},
+		}
+
+	})
+
+	gin.Default()
+
+	router := gin.Default()
+
+	// version 1
+	apiV1 := router.Group("/v1")
+
+	apiV1.GET("users", func(c *gin.Context) {
 		c.JSON(http.StatusOK, "List Of V1 Users")
 	})
 }
