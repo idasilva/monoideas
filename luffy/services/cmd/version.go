@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/idasilva/aws-serverless/luffy/services/app/modules"
 	"github.com/spf13/cobra"
 )
 
@@ -12,11 +11,11 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of generated code example",
 	Long:  `All software has versions. This is generated code example`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Build Date:", modules.BuildDate)
-		fmt.Println("Git Commit:", modules.GitCommit)
-		fmt.Println("Version:", modules.Version)
-		fmt.Println("Go Version:", modules.GoVersion)
-		fmt.Println("OS / Arch:", modules.OsArch)
+		fmt.Println("Build Date:", BuildDate)
+		fmt.Println("Git Commit:", GitCommit)
+		fmt.Println("Version:", Version)
+		fmt.Println("Go Version:", GoVersion)
+		fmt.Println("OS / Arch:", OsArch)
 	},
 }
 
