@@ -163,3 +163,6 @@ ipython_config.py
 .history
 .ionide
 .DS_Store
+
+
+.aws-sam

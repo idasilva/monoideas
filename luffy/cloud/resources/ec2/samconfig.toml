@@ -1,0 +1,21 @@
+version = 0.1
+[dev]
+[dev.deploy]
+[dev.deploy.parameters]
+stack_name = "luffy-kind-cluster"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-bkvmecosh2wv"
+s3_prefix = "luffy-kind-cluster"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+parameter_overrides = "KeyName=\"KindClusterKeyName\""
+
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "luffy-ec2-kind"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-bkvmecosh2wv"
+s3_prefix = "luffy-ec2-kind"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

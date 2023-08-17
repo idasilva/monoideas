@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description:
+  This represents an EC2 instance to expose my application via Kind
+
+Resources:
+  
+  KindEC2Instance: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      InstanceType: "t2.micro"
+      ImageId: "ami-0453898e98046c639"
+      NetworkInterfaces: 
+      - AssociatePublicIpAddress: "true"
+        DeviceIndex: "0"
+        GroupSet:  
+          - sg-08b0355dc2fe20200
+      UserData:
+        Fn::Base64:  !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          /opt/aws/bin/cfn-init -v -s ${AWS::StackId} -r KindEC2Instance --region ${AWS::Region} -c ascending
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource SampleWaitCondition --region ${AWS::Region}
+    Metadata:
+      Comment: Install Kind
+      AWS::CloudFormation::Init:
+        configSets:
+          ascending:
+            - "kind"
+            - "cluster"
+        kind:
+          commands:
+            install-kind:
+              command:  "[ $(uname -m) = aarch64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-arm64 chmod +x ./kind sudo mv ./kind /usr/local/bin/kind"
+        cluster:
+          commands:
+            create-kind-cluster:
+              command:  "kind create cluster --name luffy-cluster"
+    DependsOn: KindSecurityGroup
+
+  SampleWaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT10M
+        Count: 1
+
+  KindSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SSH and HTTP
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          FromPort: 443
+          IpProtocol: tcp
+          ToPort: 443
+        - CidrIp: 0.0.0.0/0
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
