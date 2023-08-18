@@ -4,21 +4,28 @@ Description:
   This represents an EC2 instance to expose my application via Kind
 
 Resources:
+
+  KindKeyPair:
+    Type: 'AWS::EC2::KeyPair'
+    Properties:
+      KeyName: KindKeyPairCluster
   
   KindEC2Instance: 
     Type: AWS::EC2::Instance
     Properties: 
       InstanceType: "t2.micro"
       ImageId: "ami-0453898e98046c639"
+      KeyName: !Ref KindKeyPair
       NetworkInterfaces: 
       - AssociatePublicIpAddress: "true"
         DeviceIndex: "0"
         GroupSet:  
-          - sg-08b0355dc2fe20200
+          - !GetAtt KindSecurityGroup.GroupId
       UserData:
         Fn::Base64:  !Sub |
           #!/bin/bash -xe
           yum update -y
+          sudo su
           /opt/aws/bin/cfn-init -v -s ${AWS::StackId} -r KindEC2Instance --region ${AWS::Region} -c ascending
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource SampleWaitCondition --region ${AWS::Region}
     Metadata:
@@ -26,12 +33,23 @@ Resources:
       AWS::CloudFormation::Init:
         configSets:
           ascending:
+            - "docker"
             - "kind"
             - "cluster"
+        docker:
+          commands:
+            install-docker:
+              command:  yum install docker -y
+            start-docker:
+              command:  systemctl start docker
         kind:
           commands:
-            install-kind:
-              command:  "[ $(uname -m) = aarch64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-arm64 chmod +x ./kind sudo mv ./kind /usr/local/bin/kind"
+            move-home:
+              command:  cd ./home/ec2-user
+            get-kind:
+              command:  curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64 && chmod +x ./kind && sudo mv ./kind /usr/local/bin/kind
+            export-bin-folder:
+              command:  export PATH="/usr/local/bin:$PATH"
         cluster:
           commands:
             create-kind-cluster:
