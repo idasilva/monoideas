@@ -94,3 +94,8 @@ Resources:
                   - "ecr:ListImages"
                 Resource:
                   - "*"
+              - Effect: 'Allow'
+                Action:
+                  - 's3:*'
+                Resource:
+                  - 'arn:aws:s3:::default-bucket-serverless-sonar-pipeline/*'
