@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description:
+  Iac to deploy an EKS Cluster
+
+ # aws eks update-kubeconfig --region sa-east-1 --name dev
+
+Resources:
+
+  EKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: dev
+      Version: "1.27"
+      RoleArn: "arn:aws:iam::560978416398:role/eksClusterRole"
+      ResourcesVpcConfig:
+        SecurityGroupIds:
+          - sg-05c357df9ac81ebc5
+        SubnetIds:
+          - subnet-059217299d11646ca
+          - subnet-078effdbff5cde36f
+        EndpointPublicAccess: true
+        EndpointPrivateAccess: true
+      Tags:
+        - Key: "env"
+          Value: "dev"
+
+  EKSNodegroup:
+    Type: 'AWS::EKS::Nodegroup'
+    Properties:
+      ClusterName: dev
+      NodeRole: arn:aws:iam::560978416398:role/AmazonEKSNodeRole
+      ScalingConfig:
+        MinSize: 2
+        DesiredSize: 2
+        MaxSize: 2
+      Labels:
+        platform: sunny
+      Subnets:
+        - subnet-059217299d11646ca
+    DependsOn: EKSCluster

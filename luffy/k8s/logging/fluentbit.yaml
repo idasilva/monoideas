@@ -1,0 +1,93 @@
+apiVersion: v1
+data:
+  custom_parsers.conf: |
+    [PARSER]
+        Name docker_no_time
+        Format json
+        Time_Keep Off
+        Time_Key time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+  fluent-bit.conf: |
+    [SERVICE]
+        Daemon Off
+        Flush 1
+        Log_Level info
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port 2020
+        Health_Check On
+
+    [INPUT]
+        Name tail
+        Path /var/log/containers/luffy*.log
+        Parser docker
+        Tag kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+
+    [OUTPUT]
+        Name stdout
+        Match kube.*
+        Format json
+        Json_date_key  timestamp
+        Json_date_format  iso8601
+
+    [OUTPUT]
+        Name  opensearch
+        Match *
+        Host  search-dev-kxnnrudmnhldlvgtlj7e6swyou.sa-east-1.es.amazonaws.com
+        Port  443
+        Index luffy-services
+        Type  _doc
+        AWS_Auth On
+        AWS_Region sa-east-1
+        tls     On
+        Suppress_Type_Name On
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: fluent-bit
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2023-10-01T17:23:03Z"
+  labels:
+    app.kubernetes.io/instance: fluent-bit
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: fluent-bit
+    app.kubernetes.io/version: 2.1.9
+    helm.sh/chart: fluent-bit-0.38.0
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:custom_parsers.conf: {}
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:meta.helm.sh/release-name: {}
+          f:meta.helm.sh/release-namespace: {}
+        f:labels:
+          .: {}
+          f:app.kubernetes.io/instance: {}
+          f:app.kubernetes.io/managed-by: {}
+          f:app.kubernetes.io/name: {}
+          f:app.kubernetes.io/version: {}
+          f:helm.sh/chart: {}
+    manager: helm
+    operation: Update
+    time: "2023-10-01T17:23:03Z"
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        f:fluent-bit.conf: {}
+    manager: kubectl-edit
+    operation: Update
+    time: "2023-10-01T19:03:46Z"
+  name: fluent-bit
+  namespace: default
+  resourceVersion: "17418"
+  uid: 2149cb95-fdc4-412b-8839-9407d535bd93

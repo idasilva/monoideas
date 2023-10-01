@@ -2,17 +2,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: luffy-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: username
-    nginx.ingress.kubernetes.io/auth-secret-type: password
+  # annotations:
+  #   nginx.ingress.kubernetes.io/auth-type: basic
+  #   nginx.ingress.kubernetes.io/auth-secret: username
+  #   nginx.ingress.kubernetes.io/auth-secret-type: password
 spec:
   ingressClassName: nginx
   rules:
-  - host: public.exemplo.com
+  - host: apis.chapahals.com
     http:
       paths:
-      - path: /version
+      - path: /
         pathType: Prefix
         backend:
           service:

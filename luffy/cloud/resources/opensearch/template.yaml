@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description:
+  Iac to deploy an Opensearch Domain
+
+Resources:
+
+
+  OpenSearchServiceDomain:
+    Type: AWS::OpenSearchService::Domain
+    Properties:
+      DomainName: 'dev'
+      EngineVersion: 'OpenSearch_1.0'
+      ClusterConfig:
+        InstanceCount: '1'
+        ZoneAwarenessEnabled: true
+        InstanceType: 'm3.medium.search'
+      EBSOptions:
+        EBSEnabled: true
+        Iops: '0'
+        VolumeSize: '20'
+        VolumeType: 'gp2'
+      AccessPolicies:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: 'Allow'
+            Principal:
+              AWS: 'arn:aws:iam::123456789012:user/opensearch-user'
+            Action: 'es:*'
+            Resource: 'arn:aws:es:us-east-1:846973539254:domain/test/*'

@@ -1,0 +1,8 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "luffy-eks-cluster"
+resolve_s3 = true
+s3_prefix = "luffy-eks-cluster"
+region = "sa-east-1"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
