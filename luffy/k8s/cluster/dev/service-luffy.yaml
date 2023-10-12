@@ -6,8 +6,9 @@ metadata:
 spec:
   selector:
     app: luffy
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 8080
-      nodePort: 30008
+      name: luffy-svc-port
+      #nodePort: 30008

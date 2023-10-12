@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Code Build to Review and Deploy new configuration using sonar.
+
+  '
+Resources:
+  DefaultReviewProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: default-review-stage
+      Description: this project was build to review software quality
+      ServiceRole:
+        Ref: DefaultReviewProjectRole
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:3.0
+        EnvironmentVariables:
+        - Name: ORG
+          Value: VALUE
+          Type: PLAINTEXT
+        - Name: HOST
+          Value: VALUE
+          Type: PLAINTEXT
+        - Name: PROJECT
+          Value: VALUE
+          Type: PLAINTEXT
+        - Name: SONAR_TOKEN
+          Value: VALUE
+          Type: PLAINTEXT
+        PrivilegedMode: true
+      Source:
+        GitCloneDepth: 1
+        Location: https://github.com/idasilva/aws-serverless
+        Type: GITHUB
+        BuildSpec:
+          Fn::Sub: ./pipeline/buildspec.yml
+      SourceVersion: main
+      BadgeEnabled: true
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+        S3Logs:
+          Status: DISABLED
+          EncryptionDisabled: false
+      TimeoutInMinutes: 10
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${AWS::StackName}
+  DefaultReviewProjectRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: default-review-stage-role
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - codebuild.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyName: default-review-stage-policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - codebuild:CreateReportGroup
+            - codebuild:CreateReport
+            - codebuild:UpdateReport
+            - codebuild:BatchPutTestCases
+            Resource:
+            - '*'
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            - logs:DescribeLogGroups
+            - logs:DescribeLogStreams
+            - logs:PutMetricFilter
+            Resource:
+            - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
+          - Effect: Allow
+            Action:
+            - ecr:UntagResource
+            - ecr:DescribePullThroughCacheRules
+            - ecr:DescribeImages
+            - ecr:TagResource
+            - ecr:GetAuthorizationToken
+            - ecr:ListImages
+            Resource:
+            - '*'
+          - Effect: Allow
+            Action:
+            - s3:*
+            Resource:
+            - arn:aws:s3:::default-bucket-serverless-sonar-pipeline/*

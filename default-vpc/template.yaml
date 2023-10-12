@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description:
+  Iac to deploy VPC resources.
+
+Resources:
+
+############################################################################
+##    VPC
+############################################################################
+  DefaultVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      Tags:
+        - Key: env
+          Value: dev
+
+  PublicSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPCOnpremise
+      CidrBlock: 10.0.0.0/24
+
+  PrivateSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref VPCOnpremise
+      CidrBlock: 10.0.1.0/24
+
+  DefaultSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: EC2SecurityGroup
+      VpcId: !Ref   DefaultVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  DefaultVPC:
+    Description: Default VPC
+    Value: !Ref DefaultVPC
+
+  PublicSubnet:
+    Description: Public Subnet
+    Value: !Ref PublicSubnet
+
+  PrivateSubnet:
+    Description: Private subnet
+    Value: !Ref PrivateSubnet
+
+  DefaultSG:
+    Description: Default SG
+    Value: !Ref  DefaultSG

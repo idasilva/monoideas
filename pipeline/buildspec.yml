@@ -14,4 +14,4 @@ phases:
   build:
     commands:
       - ls
-      - /opt/sonar-scanner/bin/sonar-scanner  -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=$HOST -Dsonar.projectKey=$PROJECT -Dsonar.organization=$ORG -X
+      - /opt/sonar-scanner/bin/sonar-scanner  -Dsonar.login=$SONAR_TOKEN -Dsonar.host.url=$HOST -Dsonar.projectKey=$PROJECT -Dsonar.organization=$ORG

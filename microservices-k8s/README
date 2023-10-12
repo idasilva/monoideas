@@ -1,0 +1,7 @@
+```
+ scp -i /Users/idasilva/.ssh/EC2-TUTORIAL.pem  ./* ec2-user@ec2-54-196-167-38.compute-1.amazonaws.com:/home/ec2-user
+
+
+ scp -i /Users/idasilva/.ssh/EC2-TUTORIAL.pem  ./* ec2-user@ec2-54-234-58-4.compute-1.amazonaws.com:/home/ec2-user
+
+```
