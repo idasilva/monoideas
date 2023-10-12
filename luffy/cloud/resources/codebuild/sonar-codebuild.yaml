@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  This project is responsable to create a sonar CI to Github Review.
+
+Resources:
+
+  SonarPipeline:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: sonar-pipeline
+      Description: this project was build to review software quality
+      ServiceRole: !Ref SonarProjectRole
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:3.0
+        PrivilegedMode: true
+      Source:
+        GitCloneDepth: 1
+        Location: https://github.com/idasilva/aws-serverless
+        Type: GITHUB
+        BuildSpec: ./buildspec.yml
+      SourceVersion: main
+      BadgeEnabled: true
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+        S3Logs:
+          Status: DISABLED
+          EncryptionDisabled: false
+      TimeoutInMinutes: 10
+      Tags:
+        - Key: Name
+          Value:
+            Fn::Sub: ${AWS::StackName}
+
+  SonarProjectRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: sonar-project-role
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: [ 'sts:AssumeRole' ]
+            Effect: Allow
+            Principal:
+              Service: [ codebuild.amazonaws.com ]
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+        - PolicyName: default-review-stage-policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "codebuild:CreateReportGroup"
+                  - "codebuild:CreateReport"
+                  - "codebuild:UpdateReport"
+                  - "codebuild:BatchPutTestCases"
+                Resource:
+                  - "*"
+              - Effect: "Allow"
+                Action:
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
+                  - "logs:DescribeLogGroups"
+                  - "logs:DescribeLogStreams"
+                  - "logs:PutMetricFilter"
+                Resource:
+                  - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
+              - Effect: "Allow"
+                Action:
+                  - "ecr:UntagResource"
+                  - "ecr:DescribePullThroughCacheRules"
+                  - "ecr:DescribeImages"
+                  - "ecr:TagResource"
+                  - "ecr:GetAuthorizationToken"
+                  - "ecr:ListImages"
+                Resource:
+                  - "*"
