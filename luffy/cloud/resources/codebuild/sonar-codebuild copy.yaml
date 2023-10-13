@@ -15,7 +15,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: 560978416398.dkr.ecr.sa-east-1.amazonaws.com/sonar:0.0.1
+        Image: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/sonar:0.0.1
         PrivilegedMode: true
         EnvironmentVariables:
             - Name: HOST

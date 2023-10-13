@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: CI/CD example
 
 Resources:
-  DefaultRole:
+  DevSecOpsRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -56,19 +56,19 @@ Resources:
             Resource:
               - "*"
       Roles:
-        - !Ref  DefaultRole
+        - !Ref  DevSecOpsRole
 
-  DefaultPipeline:
+  DevSecOpsPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: default-pipeline
+      Name: devsecops-pipeline
       ArtifactStore:
-        Location: default-bucket-serverless-sonar-pipeline
+        Location: devsecops-bucket-pipeline
         Type: S3
-      RoleArn: !GetAtt DefaultRole.Arn
+      RoleArn: !GetAtt DevSecOpsRole.Arn
       Stages:
         -
-          Name: Source
+          Name: SOURCE
           Actions:
             -
               Name: "RetrieveSourceCode"
@@ -86,21 +86,37 @@ Resources:
               OutputArtifacts:
                 - Name: BuildArtifact
         -
-          Name: SAST - Analisys
+          Name: SAST
           Actions:
-            - Name: "review"
-              Namespace: "DeployDevVariables"
+            - Name: "Analysis"
+              Namespace: "SastAnalysisVariables"
               ActionTypeId:
                 Owner: AWS
                 Category: Build
                 Provider: CodeBuild
                 Version: "1"
               Configuration:
-                ProjectName:  default-review-stage
+                ProjectName:  sonar-project
               InputArtifacts:
                 - Name: BuildArtifact
               OutputArtifacts:
-                - Name: TestedSourceCode
+                - Name: SastAnalysisArtifact
+        -
+          Name: STAGE
+          Actions:
+            - Name: "Deploy"
+              Namespace: "DeployStageVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:  deploy-project-stage
+              InputArtifacts:
+                - Name: SastAnalysisArtifact
+              OutputArtifacts:
+                - Name: DeployStageArtifact
             - Name: "Approval"
               ActionTypeId:
                 Owner: AWS
@@ -108,17 +124,57 @@ Resources:
                 Provider: Manual
                 Version: "1"
               Configuration:
-                CustomData: !Sub "Validação da qualidade do Software"
+                CustomData: "Implantação de uma Nova Versão"
+        -
+          Name: DAST
+          Actions:
+            - Name: "Analysis"
+              Namespace: "DastAnalysisVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:  deploy-project-stage
+              InputArtifacts:
+                - Name: DeployStageArtifact
+              OutputArtifacts:
+                - Name: DastAnlysisArtifact
+            - Name: "Approval"
+              ActionTypeId:
+                Owner: AWS
+                Category: Approval
+                Provider: Manual
+                Version: "1"
+              Configuration:
+                CustomData: "Implantação de uma Nova Versão"
+        -
+          Name: PROD
+          Actions:
+            - Name: "Deploy"
+              Namespace: "DeployProdVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:  deploy-project-prod
+              InputArtifacts:
+                - Name: DastAnlysisArtifact
+              OutputArtifacts:
+                - Name: DeployProdArtifact
 
-  DefaultBucket:
+  DevSecOpsBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: default-bucket-serverless-sonar-pipeline
+      BucketName: devsecops-bucket-pipeline
       AccessControl: Private
       
 Outputs:
   PipelineName:
     Description: Pipeline name
-    Value: !Ref DefaultPipeline
+    Value: !Ref DevSecOpsPipeline
     Export:
       Name: !Join [ ':', [ !Ref 'AWS::StackName', 'PipelineName']]

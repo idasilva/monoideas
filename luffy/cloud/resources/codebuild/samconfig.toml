@@ -1,8 +1,9 @@
 version = 0.1
 [default.deploy.parameters]
-stack_name = "sonar-project"
+stack_name = "deploy-project-prod"
 resolve_s3 = true
-s3_prefix = "sonar-project"
+s3_prefix = "deploy-project-prod"
 region = "sa-east-1"
 capabilities = "CAPABILITY_NAMED_IAM"
 image_repositories = []
+parameter_overrides = "Environment=\"prod\""
