@@ -30,5 +30,17 @@ func handlerAppVersion(c *gin.Context) {
 		"apiName": "version",
 	}).Info("version api was called...")
 
+	log.WithFields(log.Fields{
+		"apiName": "version",
+	}).Info("version api was called...")
+
 	c.JSON(http.StatusOK, "version: 1")
+}
+
+func handleGetId() int {
+	return 1
+}
+
+func handleGetID() int {
+	return 1
 }
