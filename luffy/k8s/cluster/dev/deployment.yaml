@@ -20,6 +20,6 @@ spec:
           image: 560978416398.dkr.ecr.us-east-1.amazonaws.com/luffy-services:0.2.0
           ports:
             - containerPort: 8080
-          command: ['server']
+          # command: ['main', 'server']
       imagePullSecrets:
         - name: regcred

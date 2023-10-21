@@ -26,3 +26,15 @@ spec:
                 name: luffy-service
                 port:
                   name: luffy-svc-port
+  # tls:
+  #   - hosts:
+  #       - apis.chapahals.com
+  #     secretName: apis.chapahals.com-tls
+
+  # https://kubernetes.github.io/ingress-nginx/user-guide/tls/
+
+  # we need to generate a self-signed certificate
+    # openssl req -x509 -nodes -days 9999 -newkey rsa:2048 -keyout ingress-tls.key -out ingress-tls.crt
+  
+  # or we can  generate a  Certificate Signing Request
+    # openssl req -new -newkey rsa:2048 -nodes -keyout apis.chapahals.com.key -out apis.chapahals.com.csr

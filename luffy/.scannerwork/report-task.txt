@@ -1,7 +1,0 @@
-organization=project-serverless
-projectKey=aws-serverless
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.46435
-dashboardUrl=https://sonarcloud.io/dashboard?id=aws-serverless
-ceTaskId=AYqrBa9mXouvcPax-8Iy
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AYqrBa9mXouvcPax-8Iy
