@@ -1,23 +1,26 @@
-# Use the Amazon Linux 2 base image
-FROM amazonlinux:2
+FROM debian:latest
 
-# Install dependencies
-RUN yum -y update && \
-    yum -y install java-1.8.0-openjdk-devel git unzip
+ENV GO_VERSION 1.18
+ENV GOOS linux
+ENV GOARCH amd64
+ENV SONAR_SCANNER_VERSION 5.0.1.3006
 
-# Download and install SonarScanner
-RUN curl -o sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip && \
-    unzip sonarscanner.zip -d /opt && \
-    mv /opt/sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner && \
-    rm sonarscanner.zip
+RUN  apt-get update && \
+     apt-get install -y wget build-essential unzip git
 
-# Add SonarScanner to PATH
-ENV PATH="/opt/sonar-scanner/bin:${PATH}"
+RUN wget https://golang.org/dl/go$GO_VERSION.$GOOS-$GOARCH.tar.gz -O /tmp/go$GO_VERSION.$GOOS-$GOARCH.tar.gz && \
+    tar -C /usr/local -xzf /tmp/go$GO_VERSION.$GOOS-$GOARCH.tar.gz
 
-# Other customizations here
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip  -O /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip && \
+    unzip /tmp/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip -d /opt/ && \
+    ln -s /opt/sonar-scanner-$SONAR_SCANNER_VERSION-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
 
-# Set the working directory
-WORKDIR /app
+RUN apt-get remove -y unzip && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -f /tmp/*
 
-# Define an entry point (e.g., for running builds)
+ENV PATH $PATH:/usr/local/go/bin
+
 CMD ["bash"]

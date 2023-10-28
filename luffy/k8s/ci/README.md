@@ -1,5 +1,14 @@
 ### SonarQueb
 
+Para aplicar o sonar no eks:
+```
+https://docs.sonarsource.com/sonarqube/9.9/setup-and-upgrade/deploy-on-kubernetes/deploy-sonarqube-on-kubernetes/
+helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+helm repo update
+kubectl create namespace sonarqube
+helm upgrade --install -n sonarqube sonarqube sonarqube/sonarqube
+```
+
 Para executar uma analisar através de uma pipeline:
 ```
 export SONAR_SCANNER_VERSION=5.0.1.3006
