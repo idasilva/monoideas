@@ -1,0 +1,17 @@
+#kubectl get -n kube-system configmap/aws-auth -o yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::560978416398:role/EksCodeBuildkubectlRole
+      username: build
+      groups:
+        - system:masters
+    - groups:
+      - system:bootstrappers
+      - system:nodes
+      rolearn: arn:aws:iam::560978416398:role/AmazonEKSNodeRole
+      username: system:node:{{EC2PrivateDNSName}}
