@@ -3,17 +3,29 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   SAM Definitions
 
+Environment:
+  Type: String
+  Description: Environment to deploy
+  AllowedValues:
+    - prod
+    - pre-prod
+    - dev
+
+
 Globals:
   Function:
-    Handler: main
-    Runtime: go1.x
+    Runtime: provided.al2
+    Handler: bootstrap
     Timeout: 900
     Tracing: Active
 
 Resources:
-
   ExemploFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
     Properties:
-      FunctionName: exemplo-function
+      FunctionName: !Sub exemplo-function-${Environment}
       CodeUri: ./
+      Architectures:
+        - arm64

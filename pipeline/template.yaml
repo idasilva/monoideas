@@ -86,7 +86,7 @@ Resources:
               OutputArtifacts:
                 - Name: BuildArtifact
         -
-          Name: Review
+          Name: SAST - Analisys
           Actions:
             - Name: "review"
               Namespace: "DeployDevVariables"

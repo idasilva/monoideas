@@ -1,0 +1,180 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: CI/CD example
+
+Resources:
+  DevSecOpsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: "TrustPolicyAllowCodePipelineToAssume"
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "codepipeline.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+
+  CodePipelinePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: "Policy to CodePipeline"
+      Path: /
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - 's3:*'
+            Resource:
+              - '*'
+          - Effect: "Allow"
+            Action:
+              - "codestar-connections:UseConnection"
+            Resource:
+              - '*'
+          - Effect: "Allow"
+            Action:
+              - "codebuild:BatchGetBuilds"
+              - "codebuild:StartBuild"
+              - "codebuild:BatchGetBuildBatches"
+              - "codebuild:StartBuildBatch"
+            Resource:
+              - "*"
+          - Effect: "Allow"
+            Action:
+              - "states:DescribeExecution"
+              - "states:DescribeStateMachine"
+              - "states:StartExecution"
+            Resource:
+              - "*"
+          - Effect: "Allow"
+            Action:
+              - "iam:PassRole"
+            Resource:
+              - "*"
+      Roles:
+        - !Ref  DevSecOpsRole
+
+  DevSecOpsPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: devsecops-pipeline
+      ArtifactStore:
+        Location: devsecops-bucket-pipeline
+        Type: S3
+      RoleArn: !GetAtt DevSecOpsRole.Arn
+      Stages:
+        -
+          Name: SOURCE
+          Actions:
+            -
+              Name: "RetrieveSourceCode"
+              Namespace: "SourceVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Source
+                Provider: CodeStarSourceConnection
+                Version: "1"
+              Configuration:
+                FullRepositoryId: idasilva/aws-serverless
+                BranchName:  main
+                ConnectionArn: !Sub 'arn:aws:codestar-connections:${AWS::Region}:${AWS::AccountId}:connection/1fa06bc3-c387-47ca-9a9a-476a40e455a6'
+                DetectChanges: false
+              OutputArtifacts:
+                - Name: BuildArtifact
+        -
+          Name: SAST
+          Actions:
+            - Name: "Analysis"
+              Namespace: "SastAnalysisVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:  sonar-project
+              InputArtifacts:
+                - Name: BuildArtifact
+              OutputArtifacts:
+                - Name: SastAnalysisArtifact
+        -
+          Name: STAGE
+          Actions:
+            - Name: "Deploy"
+              Namespace: "DeployStageVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:  deploy-project-stage
+              InputArtifacts:
+                - Name: SastAnalysisArtifact
+              OutputArtifacts:
+                - Name: DeployStageArtifact
+            - Name: "Approval"
+              ActionTypeId:
+                Owner: AWS
+                Category: Approval
+                Provider: Manual
+                Version: "1"
+              Configuration:
+                CustomData: "Implantação de uma Nova Versão"
+        -
+          Name: DAST
+          Actions:
+            - Name: "Analysis"
+              Namespace: "DastAnalysisVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:  deploy-project-stage
+              InputArtifacts:
+                - Name: DeployStageArtifact
+              OutputArtifacts:
+                - Name: DastAnlysisArtifact
+            - Name: "Approval"
+              ActionTypeId:
+                Owner: AWS
+                Category: Approval
+                Provider: Manual
+                Version: "1"
+              Configuration:
+                CustomData: "Implantação de uma Nova Versão"
+        -
+          Name: PROD
+          Actions:
+            - Name: "Deploy"
+              Namespace: "DeployProdVariables"
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:  deploy-project-prod
+              InputArtifacts:
+                - Name: DastAnlysisArtifact
+              OutputArtifacts:
+                - Name: DeployProdArtifact
+
+  DevSecOpsBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: devsecops-bucket-pipeline
+      AccessControl: Private
+      
+Outputs:
+  PipelineName:
+    Description: Pipeline name
+    Value: !Ref DevSecOpsPipeline
+    Export:
+      Name: !Join [ ':', [ !Ref 'AWS::StackName', 'PipelineName']]

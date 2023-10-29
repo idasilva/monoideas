@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - cd ./luffy/services
+      - make test
+
+  build:
+    on-failure: ABORT
+    commands:
+      - sonar-scanner -Dsonar.projectKey=$PROJECT -Dsonar.sources=. -Dsonar.host.url=$HOST -Dsonar.login=$SONAR_TOKEN  -Dproject.settings=sonar-scanner.properties
+      #- sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$PROJECT -Dsonar.sources=. -Dsonar.host.url=$HOST
+  

@@ -1,4 +1,4 @@
-FROM golang:alpine as builder
+FROM golang:alpine AS builder
 
 RUN mkdir /build
 
@@ -7,7 +7,7 @@ ADD . /build/
 WORKDIR /build
 
 ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
+    CGO_ENABLED=0 \  
     GOOS=linux \
     GOARCH=amd64
 

@@ -19,3 +19,12 @@ kubectl apply -f ./nginx-ingress.yaml
 ```
 
 
+
+```
+Acessar o ingress-controller diretamento no cluster:
+k port-forward -n ingress-nginx svc/ingress-nginx-controller 7001:80
+
+Monitorar logs do ingress-controller:
+k logs ingress-nginx-controller-644cb4c66c-5s99z    -n ingress-nginx --follow
+
+```
