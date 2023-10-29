@@ -39,3 +39,16 @@ Resources:
       Subnets:
         - subnet-059217299d11646ca
     DependsOn: EKSCluster
+
+  EksCodeBuildkubectlRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - arn:aws:iam::560978416398:role/deploy-project-role-stage
+            Action:
+              - 'sts:AssumeRole'

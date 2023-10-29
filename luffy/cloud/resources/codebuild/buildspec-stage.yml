@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl
+      - chmod +x ./kubectl
+      - mv -f ./kubectl /usr/local/bin/kubectl
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - ls
+      - cd ./luffy/k8s/cluster/dev
+  build:
+    on-failure: ABORT
+    commands:
+      # Building Docker Image
+      - echo "Docker build started on `date`"
+      - echo "Building the Docker image..."
+      - ls
+  post_build:
+    commands:
+      # Updating kubectl with your EKS Cluster              
+      - echo "Update Kube Config configuration"      
+      - aws eks update-kubeconfig --name dev --role-arn arn:aws:iam::560978416398:role/EksCodeBuildkubectlRole
+      - echo "Current Context"  
+      - kubectl config current-context
+      # Show time, applying manifests changes using kubectl
+      - echo "Apply changes to kube manifests"            
+      - kubectl apply -f deployment.yaml
+      - echo "All done!!!! Kubernetes changes applied"           
+   
