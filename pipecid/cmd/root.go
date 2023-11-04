@@ -7,6 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//const cfgFileName = ".ci-golang.yaml"
+//
+//var cfgFile string
+
 type rootCmd struct {
 	cmd *cobra.Command
 }
@@ -19,6 +23,21 @@ func (r *rootCmd) execute() {
 }
 
 func newRootCmd() *rootCmd {
+	//cobra.OnInitialize(func() {
+	//	if cfgFile == "" {
+	//		cfgFile = cfgFileName
+	//	}
+	//
+	//	viper.SetConfigFile(cfgFile)
+	//
+	//	if err := viper.ReadInConfig(); err != nil {
+	//		logrus.WithError(err).Error("error reading the config file")
+	//		return
+	//	}
+	//
+	//	logrus.WithField("filename", viper.ConfigFileUsed()).Info("using config file...", viper.ConfigFileUsed())
+	//})
+	//
 	root := &rootCmd{}
 	cmd := &cobra.Command{
 		Use:               "pipeci",
