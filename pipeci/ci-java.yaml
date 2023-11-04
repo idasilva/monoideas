@@ -1,0 +1,19 @@
+app:
+  name: pipeci
+  version: 1.0.0
+  owner: community
+  org: everyone
+
+language:
+  name: java
+  checks:
+    hooks:
+      - test
+
+sast:
+  name: sonar
+  data:
+    token: skljaksdj9983498327453lsldkjf
+    file: ./sonar-scanner.properties
+
+
