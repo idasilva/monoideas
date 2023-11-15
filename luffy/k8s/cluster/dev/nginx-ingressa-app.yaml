@@ -16,13 +16,13 @@ spec:
   #     port:
   #       name: svc-port
   rules:
-    - host: apis.chapahals.com
-      http:
-          paths:
-          - path: /v1/version
-            pathType: Prefix
-            backend:
-              service:
-                name: luffy-service
-                port:
-                  name: luffy-svc-port
+    # - host: apis.chapahals.com
+    - http:
+        paths:
+        - path: /v1/version
+          pathType: Prefix
+          backend:
+            service:
+              name: luffy-service
+              port:
+                name: luffy-svc-port
