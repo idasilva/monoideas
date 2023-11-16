@@ -1,0 +1,22 @@
+app:
+  name: pipeci
+  version: 1.0.0
+  owner: community
+  org: everyone
+
+language:
+  name: golang
+  checks:
+    hooks:
+      - test
+      - fmt
+      - imports
+      - lint
+
+sast:
+  name: sonar
+  data:
+    token: skljaksdj9983498327453lsldkjf
+    file: ./sonar-scanner.properties
+
+
