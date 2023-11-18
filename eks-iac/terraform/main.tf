@@ -36,10 +36,9 @@ module "eks" {
   }
 }
 
-resource "null_resource" "kubectl" {
-  provisioner "local-exec" {
-    command = "aws eks --region ${var.region} update-kubeconfig --name eks-${var.env}"
-  }
+module "gitops-argocd" {
+  source       = "./modules/gitops-argocd"
+  kube-version = "36.2.0"
 }
 
 module "kube-prometheus" {
@@ -52,7 +51,21 @@ module "nginx-controller" {
   kube-version = "36.2.0"
 }
 
-module "gitops-argocd" {
-  source       = "./modules/gitops-argocd"
-  kube-version = "36.2.0"
+resource "null_resource" "kubectl" {
+  depends_on = [module.eks]
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.region} update-kubeconfig --name eks-${var.env}"
+  }
 }
+
+resource "null_resource" "password" {
+  depends_on = [module.gitops-argocd]
+  provisioner "local-exec" {
+    working_dir = "./"
+    command     = "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath={.data.password} | base64 -d > argocd-login.txt"
+  }
+}
+
+
+
+
