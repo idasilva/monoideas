@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: sunny
+  name: luffy-deployment
+  labels:
+    app: luffy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: luffy
+  template:
+    metadata:
+      labels:
+        app: luffy
+    spec:
+      containers:
+        - name: luffy
+          image: 560978416398.dkr.ecr.us-east-1.amazonaws.com/luffy-services:0.2.0
+          ports:
+            - containerPort: 8080
+          # command: ['main', 'server']
+      imagePullSecrets:
+        - name: regcred

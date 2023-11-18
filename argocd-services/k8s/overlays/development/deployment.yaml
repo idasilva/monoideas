@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: sunny
+  name: luffy-deployment
+  labels:
+    app: luffy
+spec:
+  replicas: 6

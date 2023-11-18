@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: luffy-ingress
+  namespace: sunny
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+        - path: /v1/version
+          pathType: Prefix
+          backend:
+            service:
+              name: luffy-service
+              port:
+                name: luffy-svc-port
