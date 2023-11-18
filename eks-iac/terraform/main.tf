@@ -42,12 +42,12 @@ resource "null_resource" "kubectl" {
   }
 }
 
-module "kube" {
+module "kube-prometheus" {
   source       = "./modules/kube-prometheus"
   kube-version = "36.2.0"
 }
 
-module "ingress" {
+module "nginx-controller" {
   source       = "./modules/nginx-controller"
   kube-version = "36.2.0"
 }
