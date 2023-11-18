@@ -23,7 +23,11 @@ terraform {
       version = "~> 2.3.2"
     }
   }
-
   required_version = "~> 1.3"
+  # backend "s3" {
+  #   bucket = "terraform-artfacts-idasilva"
+  #   key    = "terraform.tfstate"
+  #   region = "sa-east-1"
+  # }
 }
 
