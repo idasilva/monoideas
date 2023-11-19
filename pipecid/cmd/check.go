@@ -29,7 +29,7 @@ func newCheckCmd() *checkCmd {
 		Args:          cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			fmt.Println("ola")
+			fmt.Println("check")
 
 			return nil
 		},

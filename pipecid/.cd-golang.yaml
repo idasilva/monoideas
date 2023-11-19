@@ -4,31 +4,11 @@ app:
   owner: community
   org: everyone
 
-language:
-  name: golang
-  build:
-    output: "dist/{{.app}}_{{.goos}}-{{.goarch}}"
-    env:
-      - GO111MODULE=on
-      - CGO_ENABLED=0
-    deps:
-      - go
-      - git
-    goos:
-      - linux
-    goarch:
-      - amd64
-    ldflags:
-      - -s -w -X main.version={{.Version}}
+gitops:
+  argocd:
+    app:
+      name: luffy
+    username: 
+    password:
 
-deploy:
-  name:
-  data:
-    eks:
-    registry:
-
-dast:
-  name:
-  data:
-    validation:
 
