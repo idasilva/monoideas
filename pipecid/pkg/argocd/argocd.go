@@ -3,14 +3,13 @@ package argocd
 import (
 	"fmt"
 
-	"github.com/argoproj/argo-cd/pkg/apiclient/argoproj"
 	"google.golang.org/grpc"
 )
 
 type ArgoCD struct {
 }
 
-func Login(username, password string) error {
+func (a *ArgoCD) Login(username, password string) error {
 
 	// Set the ArgoCD API server address
 	argoCDServer := "localhost:8080" // Replace with your ArgoCD server address
@@ -31,13 +30,13 @@ func Login(username, password string) error {
 	return nil
 }
 
-func Sync(appName string) error {
+func (a *ArgoCD) Sync(appName string) error {
 
 	return nil
 
 }
 
-func Wait() error {
+func (a *ArgoCD) Wait() error {
 
 	return nil
 

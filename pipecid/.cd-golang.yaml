@@ -6,9 +6,12 @@ app:
 
 gitops:
   argocd:
+    server: 
+      url:
+      username:
+      password:
     app:
       name: luffy
-    username: 
-    password:
+
 
 

@@ -8,12 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Data struct {
-	appName  string
-	userName string
-	password string
-}
-
 type syncCmd struct {
 	cmd *cobra.Command
 }
@@ -52,8 +46,13 @@ func newSyncCmd() *syncCmd {
 	}
 
 	sync.cmd = cmd
-	sync.cmd.PersistentFlags().StringP("app-name", "a", "", "identify the source of truth")
-	sync.cmd.PersistentFlags().StringP("argocd-name", "", "", "argocd name")
-	sync.cmd.PersistentFlags().StringP("argocd-password", "", "", "argocd passord")
+	sync.cmd.PersistentFlags().
+		StringP("app-name", "a", "", "identify the source of truth")
+
+	sync.cmd.PersistentFlags().
+		StringP("argocd-name", "", "", "argocd name")
+
+	sync.cmd.PersistentFlags().
+		StringP("argocd-password", "", "", "argocd passord")
 	return sync
 }
