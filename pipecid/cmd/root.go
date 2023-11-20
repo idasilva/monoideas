@@ -51,6 +51,7 @@ func newRootCmd() *rootCmd {
 
 	cmd.AddCommand(
 		newCheckCmd().cmd,
+		newSyncCmd().cmd,
 	)
 	root.cmd = cmd
 	return root
