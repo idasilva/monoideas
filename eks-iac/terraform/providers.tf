@@ -2,15 +2,24 @@ provider "aws" {
   region = var.region
 }
 
-# For authentication, the Helm provider can get its configuration by supplying a path to your kubeconfig file.
-provider "helm" {
-  kubernetes {
-    config_path = "~/.kube/config"
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+    command     = "aws"
   }
 }
 
-# Used to interact with the resources supported by Kubernetes.
-# The provider needs to be configured with the proper credentials before it can be used.
-provider "kubernetes" {
-  config_path = pathexpand(var.kube_config)
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+      command     = "aws"
+    }
+  }
 }

@@ -1,6 +1,3 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
 locals {
   cluster_name    = "eks-${var.env}"
   cluster_subnets = ["subnet-059217299d11646ca", "subnet-0b20bb9a4b4c17f7a"]
@@ -36,27 +33,30 @@ module "eks" {
   }
 }
 
-# --- Sonarqube ---
 resource "helm_release" "sonarqube" {
   chart            = "sonarqube"
   repository       = "https://SonarSource.github.io/helm-chart-sonarqube"
   name             = "sonarqube"
   version          = "10.3.0"
-  namespace        = "sonarqube"
+  namespace        = var.sonar_namespace
   create_namespace = true
   recreate_pods    = true
-}
-
-
-resource "null_resource" "kubectl" {
+   values = [<<EOF
+plugins:
+  install:
+    - https://github.com/mc1arke/sonarqube-community-branch-plugin/releases/download/1.14.0/sonarqube-community-branch-plugin-1.14.0.jar
+EOF
+  ]
   depends_on = [module.eks]
-  provisioner "local-exec" {
-    command = "aws eks --region ${var.region} update-kubeconfig --name eks-${var.env}"
-  }
 }
 
+resource "helm_release" "ingress" {
+  name       = "ingress"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  version    = "4.5.2"
+  create_namespace = true
+  namespace  = var.ingress_namespace
 
-module "nginx-controller" {
-  source       = "./modules/nginx-controller"
-  kube-version = "36.2.0"
+  depends_on = [module.eks]
 }

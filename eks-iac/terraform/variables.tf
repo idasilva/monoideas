@@ -7,17 +7,14 @@ variable "region" {
   default     = "sa-east-1"
 }
 
-variable "kube_config" {
+variable "ingress_namespace" {
   type    = string
-  default = "~/.kube/config"
+  default = "ingress"
 }
 
-variable "namespace" {
+variable "sonar_namespace" {
   type    = string
-  default = "monitoring"
-}
-
-variable "kube-version" {
+  default = "sonarqube"
 }
 
 variable "env" {
