@@ -27,29 +27,26 @@ module "eks" {
     one = {
       name = "node-group-${var.env}"
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.large"]
 
       min_size     = 1
       max_size     = 3
-      desired_size = 2
+      desired_size = 3
     }
   }
 }
 
-module "gitops-argocd" {
-  source       = "./modules/gitops-argocd"
-  kube-version = "36.2.0"
+# --- Sonarqube ---
+resource "helm_release" "sonarqube" {
+  chart            = "sonarqube"
+  repository       = "https://SonarSource.github.io/helm-chart-sonarqube"
+  name             = "sonarqube"
+  version          = "10.3.0"
+  namespace        = "sonarqube"
+  create_namespace = true
+  recreate_pods    = true
 }
 
-module "kube-prometheus" {
-  source       = "./modules/kube-prometheus"
-  kube-version = "36.2.0"
-}
-
-module "nginx-controller" {
-  source       = "./modules/nginx-controller"
-  kube-version = "36.2.0"
-}
 
 resource "null_resource" "kubectl" {
   depends_on = [module.eks]
@@ -58,14 +55,8 @@ resource "null_resource" "kubectl" {
   }
 }
 
-resource "null_resource" "password" {
-  depends_on = [module.gitops-argocd]
-  provisioner "local-exec" {
-    working_dir = "./"
-    command     = "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath={.data.password} | base64 -d > argocd-login.txt"
-  }
+
+module "nginx-controller" {
+  source       = "./modules/nginx-controller"
+  kube-version = "36.2.0"
 }
-
-
-
-
