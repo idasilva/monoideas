@@ -9,6 +9,7 @@ name: Main Workflow
 jobs:
   sonarqube:
     runs-on: ubuntu-latest
+    environment: Development
     steps:
     - uses: actions/checkout@v3
       with:
