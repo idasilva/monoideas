@@ -11,6 +11,7 @@ on:
 jobs:
   sonarqube:
     runs-on: ubuntu-latest
+    working-directory: ./nextjs-app
     environment: Development
 
     steps:
