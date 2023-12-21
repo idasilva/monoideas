@@ -20,9 +20,9 @@ variable "sonar_namespace" {
 variable "env" {
   description = "Cluster Environment"
   type        = string
-  default     = "dev"
+  default     = "development"
   validation {
-    condition     = contains(["dev", "stage", "prod"], var.env)
+    condition     = contains(["development", "stage", "prod"], var.env)
     error_message = "Valid value is one of the following: dev, stage or prod."
   }
 }

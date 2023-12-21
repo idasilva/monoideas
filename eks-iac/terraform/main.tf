@@ -4,7 +4,7 @@ locals {
   cluster_vpc_id  = "vpc-94f70cf2"
 }
 
-module "eks" {
+module "eks_cluster" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.20.0"
 
@@ -31,32 +31,4 @@ module "eks" {
       desired_size = 3
     }
   }
-}
-
-resource "helm_release" "sonarqube" {
-  chart            = "sonarqube"
-  repository       = "https://SonarSource.github.io/helm-chart-sonarqube"
-  name             = "sonarqube"
-  version          = "10.3.0"
-  namespace        = var.sonar_namespace
-  create_namespace = true
-  recreate_pods    = true
-   values = [<<EOF
-plugins:
-  install:
-    - https://github.com/mc1arke/sonarqube-community-branch-plugin/releases/download/1.14.0/sonarqube-community-branch-plugin-1.14.0.jar
-EOF
-  ]
-  depends_on = [module.eks]
-}
-
-resource "helm_release" "ingress" {
-  name       = "ingress"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "ingress-nginx"
-  version    = "4.5.2"
-  create_namespace = true
-  namespace  = var.ingress_namespace
-
-  depends_on = [module.eks]
 }
