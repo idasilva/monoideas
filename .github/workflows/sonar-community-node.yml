@@ -50,7 +50,7 @@ jobs:
         fetch-depth: 0
   
     - name: Set up Sonar Quality Gate
-      uses: dieuhd/sonar-quality-gate@v1
+      uses: dieuhd/sonar-quality-gate@master
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }} 
         GIT_URL: "https://api.github.com"
