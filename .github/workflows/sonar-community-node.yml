@@ -17,7 +17,6 @@ jobs:
         working-directory: ./nextjs-app
 
     steps:
-
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -35,36 +34,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      
-    # - name: SonarQube Quality Gate check
-    #   id: sonarqube-quality-gate-check
-    #   uses: sonarsource/sonarqube-quality-gate-action@master
-    #   timeout-minutes: 5
-    #   env:
-    #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #    SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-    # - name: Checkout
-    #   uses: actions/checkout@v2.3.4
-    #   with:
-    #     fetch-depth: 0
-  
-    # - name: Set up Sonar Quality Gate
-    #   uses: dieuhd/sonar-quality-gate@v1.2.0
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.TOKEN }} 
-    #     GIT_URL: "https://api.github.com"
-    #     GIT_TOKEN: ${{ secrets.TOKEN }} 
-    #     SONAR_URL: ${{ secrets.SONAR_HOST_URL }}
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #     SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-    #   with:
-    #     login:  ${{ secrets.SONAR_TOKEN }}
-    #     skipScanner: true
-
-    # test:
-    # runs-on: ubuntu-latest
-    # steps:
       - uses: phwt/sonarqube-quality-gate-action@v1
         id: quality-gate-check
         with:
@@ -72,9 +42,6 @@ jobs:
           sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main # Optional input
     
-      - name: Output result
-        run: |
-          echo "${{ steps.quality-gate-check.outputs.project-status }}"
-          echo "${{ steps.quality-gate-check.outputs.quality-gate-result }}"
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
