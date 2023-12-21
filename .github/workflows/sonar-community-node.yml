@@ -62,9 +62,9 @@ jobs:
     #     login:  ${{ secrets.SONAR_TOKEN }}
     #     skipScanner: true
 
-    test:
-    runs-on: ubuntu-latest
-    steps:
+    # test:
+    # runs-on: ubuntu-latest
+    # steps:
       - uses: phwt/sonarqube-quality-gate-action@v1
         id: quality-gate-check
         with:
@@ -73,3 +73,8 @@ jobs:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: main # Optional input
+    
+      - name: Output result
+        run: |
+          echo "${{ steps.quality-gate-check.outputs.project-status }}"
+          echo "${{ steps.quality-gate-check.outputs.quality-gate-result }}"
