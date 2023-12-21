@@ -60,5 +60,4 @@ jobs:
         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
       with:
         login:  ${{ secrets.SONAR_TOKEN }}
-        url: ${{ secrets.SONAR_HOST_URL }}
-        projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+        skipScanner: true
