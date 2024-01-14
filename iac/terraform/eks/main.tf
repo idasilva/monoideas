@@ -1,5 +1,5 @@
 locals {
-  cluster_name    = "eks-${var.env}"
+  cluster_name    = "eks-${terraform.workspace}"
   cluster_subnets = ["subnet-059217299d11646ca", "subnet-0b20bb9a4b4c17f7a"]
   cluster_vpc_id  = "vpc-94f70cf2"
 }
@@ -22,7 +22,7 @@ module "eks_cluster" {
 
   eks_managed_node_groups = {
     one = {
-      name = "node-group-${var.env}"
+      name = "node-group-${terraform.workspace}"
 
       instance_types = ["t3.large"]
 

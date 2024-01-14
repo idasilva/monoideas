@@ -1,6 +1,3 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
 output "cluster_endpoint" {
   description = "Endpoint for EKS control plane"
   value       = module.eks_cluster.cluster_endpoint
@@ -14,11 +11,6 @@ output "cluster_security_group_id" {
 output "region" {
   description = "AWS region"
   value       = var.region
-}
-
-output "env" {
-  description = "Cluster Env"
-  value       = var.env
 }
 
 output "cluster_name" {
