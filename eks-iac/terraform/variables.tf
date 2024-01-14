@@ -7,25 +7,22 @@ variable "region" {
   default     = "sa-east-1"
 }
 
-variable "kube_config" {
+variable "ingress_namespace" {
   type    = string
-  default = "~/.kube/config"
+  default = "ingress"
 }
 
-variable "namespace" {
+variable "sonar_namespace" {
   type    = string
-  default = "monitoring"
-}
-
-variable "kube-version" {
+  default = "sonarqube"
 }
 
 variable "env" {
   description = "Cluster Environment"
   type        = string
-  default     = "dev"
+  default     = "development"
   validation {
-    condition     = contains(["dev", "stage", "prod"], var.env)
+    condition     = contains(["development", "stage", "prod"], var.env)
     error_message = "Valid value is one of the following: dev, stage or prod."
   }
 }

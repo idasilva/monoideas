@@ -1,13 +1,10 @@
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-
 locals {
   cluster_name    = "eks-${var.env}"
   cluster_subnets = ["subnet-059217299d11646ca", "subnet-0b20bb9a4b4c17f7a"]
   cluster_vpc_id  = "vpc-94f70cf2"
 }
 
-module "eks" {
+module "eks_cluster" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.20.0"
 
@@ -27,45 +24,11 @@ module "eks" {
     one = {
       name = "node-group-${var.env}"
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.large"]
 
       min_size     = 1
       max_size     = 3
-      desired_size = 2
+      desired_size = 3
     }
   }
 }
-
-module "gitops-argocd" {
-  source       = "./modules/gitops-argocd"
-  kube-version = "36.2.0"
-}
-
-module "kube-prometheus" {
-  source       = "./modules/kube-prometheus"
-  kube-version = "36.2.0"
-}
-
-module "nginx-controller" {
-  source       = "./modules/nginx-controller"
-  kube-version = "36.2.0"
-}
-
-resource "null_resource" "kubectl" {
-  depends_on = [module.eks]
-  provisioner "local-exec" {
-    command = "aws eks --region ${var.region} update-kubeconfig --name eks-${var.env}"
-  }
-}
-
-resource "null_resource" "password" {
-  depends_on = [module.gitops-argocd]
-  provisioner "local-exec" {
-    working_dir = "./"
-    command     = "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath={.data.password} | base64 -d > argocd-login.txt"
-  }
-}
-
-
-
-
