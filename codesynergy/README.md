@@ -6,7 +6,7 @@ The ideia of this project is to build a small product to compare similatiry beet
 
 # Artifacts
 ### New Amplify Project
-    - amplify init
+    - amplify init 
     - amplify add hosting
     - amplify add api
 ### Exist Environment
