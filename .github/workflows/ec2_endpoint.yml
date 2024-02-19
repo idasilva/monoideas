@@ -31,7 +31,6 @@ jobs:
       - name: ssh config
         id: ssh-config
         run: |
-          which ssh-agent || ( apk --update add git openssh-client )
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           
