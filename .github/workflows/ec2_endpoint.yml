@@ -28,20 +28,23 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Interface Endpoint
-        id: rollback
-        shell: bash
+      - name: Create SSH Config File
         run: |
-          ls -a
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
-          aws ec2-instance-connect ssh  \
-            --instance-id i-0560fb61b4ed18c3a \
-            --instance-ip 172.31.111.208 \
-            --connection-type eice  \
-            --os-user ubuntu  \
-            --region us-east-1  \
-            --private-key-file ./endpoint.pem   \
-            --eice-options maxTunnelDuration=900 \
-            --no-cli-auto-prompt
+          echo "Host i-*" >> ~/.ssh/config
+          echo "  User ubuntu" >> ~/.ssh/config
+          echo "  Port 22" >> ~/.ssh/config
+          echo "  ProxyCommand sh -c \"aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a\"" >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+    - name: Display SSH Config File
+      run: cat ~/.ssh/config
+
+      - name: ssh proxy command
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ubuntu
+          username: i-0560fb61b4ed18c3a 
+          key: ${{ secrets.KEY }}
+          script: |
+            mkdir abc/def
+            ls -al
