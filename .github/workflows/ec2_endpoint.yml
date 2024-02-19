@@ -30,8 +30,11 @@ jobs:
     
       - name: Ssh proxy command
         run: |
-          chmod 400 ./endpoint.pem 
-          ssh ubuntu@i-0560fb61b4ed18c3a -o StrictHostKeyChecking=no -i ./endpoint.pem -o ProxyCommand='aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a' '
-
-              ls -a
-          '
+          aws ec2-instance-connect ssh  \
+            --instance-id i-0560fb61b4ed18c3a \
+            --instance-ip 172.31.111.208 \
+            --connection-type eice  \
+            --os-user ubuntu  \
+            --region us-east-1  \
+            --private-key-file ./endpoint.pem   \
+            --eice-options maxTunnelDuration=900
