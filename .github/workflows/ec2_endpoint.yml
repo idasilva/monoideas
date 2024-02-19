@@ -32,12 +32,12 @@ jobs:
       - name: Interface Endpoint
         id: rollback
         run: |
-          aws ec2-instance-connect ssh  \
+          aws ec2-instance-connect ssh \
             --instance-id i-0cf5ec99fdb293e01 \
-            --connection-type eice  \
-            --os-user ubuntu  \
-            --region us-east-1  \
-            --eice-options maxTunnelDuration=900 
-          
-          ls -a
-          exit
+            --connection-type eice \
+            --os-user ubuntu \
+            --region us-east-1 \
+            --eice-options maxTunnelDuration=900<<EOT
+              ls -a 
+              exit
+EOT
