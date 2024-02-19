@@ -16,11 +16,11 @@ echo "AQUUUUI"
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
-ssh-keyscan -H "172.31.124.201" >> ~/.ssh/known_hosts
+ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
 
 aws ec2-instance-connect ssh  \
-  --instance-id i-0560fb61b4ed18c3a \
-  --instance-ip 172.31.124.201 \
+  --instance-id i-0cf5ec99fdb293e01 \
+  --instance-ip 172.31.111.208 \
   --connection-type eice  \
   --os-user ubuntu  \
   --region us-east-1  \
