@@ -47,7 +47,7 @@ jobs:
           host: i-0560fb61b4ed18c3a  
           username: ubuntu
           key: ${{ secrets.KEY }}
-          proxy_host:  i-0560fb61b4ed18c3a 
+          proxy_host:  localhost
           proxy_username: ubuntu
           proxy_key: ${{ secrets.KEY }}
           script: |
