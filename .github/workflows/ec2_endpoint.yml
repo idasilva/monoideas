@@ -34,7 +34,6 @@ jobs:
           which ssh-agent || ( apk --update add git openssh-client )
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
-          ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
           
       - name: Run sh
         run: |
