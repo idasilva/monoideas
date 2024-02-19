@@ -18,6 +18,8 @@ chmod 700 ~/.ssh
 
 ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
 
+echo "$(cat ./endpoint.pem)" | ssh-add -
+
 aws ec2-instance-connect ssh  \
   --instance-id i-0cf5ec99fdb293e01 \
   --instance-ip 172.31.111.208 \
