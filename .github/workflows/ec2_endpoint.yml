@@ -35,7 +35,7 @@ jobs:
           echo "Host i-*" >> ~/.ssh/config
           echo "  User ubuntu" >> ~/.ssh/config
           echo "  Port 22" >> ~/.ssh/config
-          echo "  ProxyCommand sh -c \"aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a --local-port 8888 \"" >> ~/.ssh/config
+          echo "  ProxyCommand sh -c \"aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a --local-port 22 \"" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
 
       - name: Display SSH Config File
