@@ -30,4 +30,4 @@ jobs:
     
       - name: Ssh proxy command
         run: |
-          ssh ubuntu@i-0560fb61b4ed18c3a -i ./endpoint.pem -o ProxyCommand='aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a'
+          ssh ubuntu@i-0560fb61b4ed18c3a -o StrictHostKeyChecking=no  -i ./endpoint.pem -o ProxyCommand='aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a'
