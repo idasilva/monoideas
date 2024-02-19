@@ -18,6 +18,7 @@ chmod 700 ~/.ssh
 
 eval `ssh-agent -s`
 echo "$(cat ./endpoint.pem)" | ssh-add -
+rm ~/.ssh/known_hosts
 ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
 
 
