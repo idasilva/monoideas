@@ -32,4 +32,5 @@ jobs:
       - name: Interface Endpoint
         id: rollback
         run: |
+          ls -a
           ./deploy.sh
