@@ -1,5 +1,8 @@
  #!/bin/bash
- 
+
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
 ssh-keyscan -H -t rsa 172.31.111.208 >> ~/.ssh/known_hosts
 
 script="aws ec2-instance-connect ssh  \
