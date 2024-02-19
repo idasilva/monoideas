@@ -37,3 +37,4 @@ jobs:
           ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
           ls -a
           ./deploy.sh
+          ls -a
