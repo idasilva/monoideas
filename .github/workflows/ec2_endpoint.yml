@@ -27,10 +27,9 @@ jobs:
         with:
           role-to-assume: ${{ env.AWS_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
-
+    
       - name: Ssh proxy command
         run: |
 			    ssh ubuntu@i-0560fb61b4ed18c3a \
-          -i ${{ secrets.KEY }} \
-          -o ProxyCommand='aws ec2-instance-connect open-tunnel \
-          --instance-id i-0560fb61b4ed18c3a'
+            -i ${{ secrets.KEY }} \
+            -o ProxyCommand='aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a'
