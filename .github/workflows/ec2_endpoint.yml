@@ -27,13 +27,8 @@ jobs:
         with:
           role-to-assume: ${{ env.AWS_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
-    
-      - name: ssh config
-        id: ssh-config
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
           
-      - name: Run sh
+      - name: Run sh NMOVO
+        id: novo
         run: |
           ./deploy.sh
