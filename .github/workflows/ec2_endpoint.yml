@@ -28,27 +28,9 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Create SSH Config File
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "Host i-*" >> ~/.ssh/config
-          echo "  User ubuntu" >> ~/.ssh/config
-          echo "  Port 22" >> ~/.ssh/config
-          echo "  ProxyCommand sh -c \"aws ec2-instance-connect open-tunnel --instance-id i-0560fb61b4ed18c3a --local-port 22 \"" >> ~/.ssh/config
-          chmod 600 ~/.ssh/config
-
-      - name: Display SSH Config File
-        run: cat ~/.ssh/config
-
       - name: Ssh proxy command
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: i-0560fb61b4ed18c3a  
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          proxy_host:  localhost
-          proxy_username: ubuntu
-          script: |
-            mkdir abc/def
-            ls -al
+        run: |
+			    ssh ubuntu@i-0560fb61b4ed18c3a \
+          -i ${{ secrets.KEY }} \
+          -o ProxyCommand='aws ec2-instance-connect open-tunnel \
+          --instance-id i-0560fb61b4ed18c3a'
