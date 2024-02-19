@@ -47,9 +47,9 @@ jobs:
           host: i-0560fb61b4ed18c3a  
           username: ubuntu
           key: ${{ secrets.KEY }}
-        #  proxy_host: ${{ secrets.PROXY_HOST }}
-         # proxy_username: ubuntu
-        #  proxy_key: ${{ secrets.KEY }}
+          proxy_host:  i-0560fb61b4ed18c3a 
+          proxy_username: ubuntu
+          proxy_key: ${{ secrets.KEY }}
           script: |
             mkdir abc/def
             ls -al
