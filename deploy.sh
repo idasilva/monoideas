@@ -13,13 +13,13 @@
 
 echo "AQUUUUI"
 
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
+#mkdir -p ~/.ssh
+#chmod 700 ~/.ssh
 
-eval `ssh-agent -s`
-echo "$(cat ./endpoint.pem)" | ssh-add -
+#eval `ssh-agent -s`
+#echo "$(cat ./endpoint.pem)" | ssh-add -
 
-ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
+##ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
 
 
 aws ec2-instance-connect ssh  \
@@ -27,6 +27,7 @@ aws ec2-instance-connect ssh  \
   --connection-type eice  \
   --os-user ubuntu  \
   --region us-east-1  \
+  --private-key-file ./endpoint.pem   \
   --eice-options maxTunnelDuration=900<<EOT
     echo "Executing command block 1"
     ls -a
