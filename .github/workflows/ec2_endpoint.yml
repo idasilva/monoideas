@@ -40,4 +40,8 @@ jobs:
             --os-user ubuntu  \
             --region us-east-1  \
             --private-key-file ./endpoint.pem   \
-            --eice-options maxTunnelDuration=900
+            --eice-options maxTunnelDuration=900'
+
+            ls -a 
+
+            ''
