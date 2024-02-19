@@ -32,12 +32,13 @@ jobs:
       - name: Interface Endpoint
         id: rollback
         run: |
-          aws ec2-instance-connect ssh \
+          script="aws ec2-instance-connect ssh  \
             --instance-id i-0cf5ec99fdb293e01 \
-            --connection-type eice \
-            --os-user ubuntu \
-            --region us-east-1 \
-            --eice-options maxTunnelDuration=900 <<'    EOT'
-              echo "Executing command block 1"
-              ls -a
-          EOT
+            --connection-type eice  \
+            --os-user ubuntu  \
+            --region us-east-1  \
+            --eice-options maxTunnelDuration=900"
+
+          bash -c "$script <<EOF
+            ls -a
+EOF"
