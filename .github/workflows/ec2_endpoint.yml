@@ -28,8 +28,10 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
     
-      - name: Ssh proxy command
+      - name: ssh config
+        id: ssh-config
         run: |
+          which ssh-agent || ( apk --update add git openssh-client )
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
           ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
