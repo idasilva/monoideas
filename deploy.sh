@@ -16,9 +16,10 @@ echo "AQUUUUI"
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
+eval `ssh-agent -s`
+echo "$(cat ./endpoint.pem)" | ssh-add -
 ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
 
-echo "$(cat ./endpoint.pem)" | ssh-add -
 
 aws ec2-instance-connect ssh  \
   --instance-id i-0cf5ec99fdb293e01 \
