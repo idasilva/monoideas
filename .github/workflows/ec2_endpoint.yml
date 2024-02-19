@@ -44,9 +44,12 @@ jobs:
       - name: Ssh proxy command
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ubuntu
-          username: i-0560fb61b4ed18c3a 
+          host: i-0560fb61b4ed18c3a  
+          username: ubuntu
           key: ${{ secrets.KEY }}
+        #  proxy_host: ${{ secrets.PROXY_HOST }}
+         # proxy_username: ubuntu
+        #  proxy_key: ${{ secrets.KEY }}
           script: |
             mkdir abc/def
             ls -al
