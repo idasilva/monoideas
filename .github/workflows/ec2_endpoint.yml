@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: "us-east-1"
-  AWS_ROLE: "arn:aws:iam::560978416398:role/GitHubAction-AssumeRoleWithAction"
+  AWS_ROLE: "arn:aws:iam::560978416398:role/GitHubAction-AssumeRoleWithAction."
 
 jobs: 
   build:
