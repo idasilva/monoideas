@@ -30,6 +30,7 @@ jobs:
 
       - name: Interface Endpoint
         id: rollback
+        shell: bash
         run: |
           ls -a
           mkdir -p ~/.ssh
