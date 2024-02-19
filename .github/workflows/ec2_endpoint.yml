@@ -37,8 +37,7 @@ jobs:
             --connection-type eice  \
             --os-user ubuntu  \
             --region us-east-1  \
-            --eice-options maxTunnelDuration=900 '
-              ls -a
-              exit
-            '
+            --eice-options maxTunnelDuration=900 
           
+          ls -a
+          exit
