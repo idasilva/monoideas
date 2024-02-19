@@ -39,12 +39,12 @@ jobs:
       - name: Display SSH Config File
         run: cat ~/.ssh/config
 
-        - name: ssh proxy command
-          uses: appleboy/ssh-action@v1.0.3
-          with:
-            host: ubuntu
-            username: i-0560fb61b4ed18c3a 
-            key: ${{ secrets.KEY }}
-            script: |
-              mkdir abc/def
-              ls -al
+      - name: Ssh proxy command
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ubuntu
+          username: i-0560fb61b4ed18c3a 
+          key: ${{ secrets.KEY }}
+          script: |
+            mkdir abc/def
+            ls -al
