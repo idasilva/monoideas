@@ -14,5 +14,6 @@ script="aws ec2-instance-connect ssh  \
 echo "AQUUUUI"
 bash -c "$script <<EOF
   ls -a
-  mkdir testando
+  mkdir enodes
+  ls -a
 EOF"
