@@ -13,6 +13,8 @@
 
 echo "AQUUUUI"
 
+ssh-keyscan -H "172.31.111.208" >> ~/.ssh/known_hosts
+
 aws ec2-instance-connect ssh  \
   --instance-id i-0560fb61b4ed18c3a \
   --instance-ip 172.31.111.208 \
