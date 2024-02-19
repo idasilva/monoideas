@@ -10,6 +10,9 @@ script="aws ec2-instance-connect ssh  \
             --eice-options maxTunnelDuration=900 \
             --no-cli-auto-prompt"
 
+
+echo "AQUUUUI"
 bash -c "$script <<EOF
   ls -a
+  mkdir testando
 EOF"
