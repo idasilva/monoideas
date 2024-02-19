@@ -1,12 +1,11 @@
  #!/bin/bash
 
-
 script="aws ec2-instance-connect ssh  \
-            --instance-id i-0cf5ec99fdb293e01 \
+            --instance-id i-0560fb61b4ed18c3a \
             --connection-type eice  \
             --os-user ubuntu  \
             --region us-east-1  \
-            --private-key-file endpoint.pem \
+            --private-key-file ./endpoint.pem \
             --eice-options maxTunnelDuration=900"
 
 bash -c "$script <<EOF
