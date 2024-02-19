@@ -30,6 +30,8 @@ jobs:
 
       - name: Create SSH Config File
         run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           echo "Host i-*" >> ~/.ssh/config
           echo "  User ubuntu" >> ~/.ssh/config
           echo "  Port 22" >> ~/.ssh/config
