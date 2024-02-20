@@ -18,9 +18,10 @@ chmod 700 ~/.ssh
 
 eval `ssh-agent -s`
 echo "$(cat ./endpoint.pem)" | ssh-add -
-rm ~/.ssh/known_hosts
+echo "" > ~/.ssh/known_hosts 
 ssh-keyscan -H "172.31.124.225" >> ~/.ssh/known_hosts
 
+ssh-keygen -R
 
 aws ec2-instance-connect ssh  \
   --instance-id i-0973c4c7d024bd386 \
