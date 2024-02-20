@@ -1,7 +1,7 @@
  #!/bin/bash
 
 echo "AQUUUUI"
-
+chmod 400 "endpoint.pem"
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 
