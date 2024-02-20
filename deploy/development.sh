@@ -21,11 +21,9 @@ aws ec2-instance-connect ssh  \
   --os-user ubuntu  \
   --region us-east-1  \
   --eice-options maxTunnelDuration=900<<EOT
-    echo "Executing command block 1"
+    cd /home/ubuntu/
     ls -a
-    mkdir viapipelinevv232
-    ls -a
-    echo "Executing command block 2"
+    exit
 EOT
 }
 
