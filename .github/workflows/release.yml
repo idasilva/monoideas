@@ -1,0 +1,13 @@
+name: New release was published
+
+on:
+  release:
+    types: [published]
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Build
+      run: echo "tag ${{ github.ref_name }}"
