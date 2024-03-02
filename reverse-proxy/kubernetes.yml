@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: nginx-proxy
+data:
+  nginx.conf: |
+    server {
+        listen 8080;
+
+        location / {
+          proxy_pass http://0.0.0.0:5601/;
+        }
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-svc
+  namespace: nginx-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-proxy-svc
+  template:
+    metadata:
+      labels:
+        app: nginx-proxy-svc
+    spec:
+      containers:
+      - name: nginx-proxy-svc
+        image: nginx
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/conf.d
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        ports:
+        - containerPort: 8080
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy-svc
+  namespace: nginx-proxy
+spec:
+  selector:
+    app: nginx-proxy-svc
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
