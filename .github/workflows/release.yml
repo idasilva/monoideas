@@ -1,0 +1,24 @@
+name: New release was published
+
+on:
+  release:
+    types: [published]
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 10
+
+      - name: Build
+        run: |
+          ls -a
+          echo "tag ${{ github.ref_name }}"
