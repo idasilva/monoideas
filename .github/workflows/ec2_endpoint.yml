@@ -28,7 +28,7 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
           
-      - name: Run sh NMOVO
+      - name: Instance connect
         id: novo
         run: |
-          sh ./deploy/development.sh -d  i-0973c4c7d024bd386 -v 1.27.3 -n balanco-app -u 172.31.124.225
+          sh ./deploy/development.sh -d  XPTO -v 1.27.3 -n XPTO -u 1XPTO
