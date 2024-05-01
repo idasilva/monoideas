@@ -3,7 +3,7 @@ name: New Hotfix tag was published
 on:
   push:
     tags:
-      - "hotfix"
+      - "v[0-9]+.[0-9]+.[0-9]+-hotfix"
 
 jobs: 
   build:
