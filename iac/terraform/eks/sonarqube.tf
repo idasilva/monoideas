@@ -5,6 +5,6 @@ resource "helm_release" "sonarqube" {
   version          = "10.3.0"
   namespace        = var.sonar_namespace
   create_namespace = true
-  recreate_pods    = true
+  recreate_pods    = false
   depends_on       = [module.eks_cluster]
 }

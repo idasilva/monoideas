@@ -1,0 +1,34 @@
+name: First Workflow
+
+on:
+  push:
+    branches: [ ec2-instace-connect ]
+
+env:
+  AWS_REGION: "us-east-1"
+  AWS_ROLE: "arn:aws:iam::XPTO:role/GitHubAction-AssumeRoleWithAction."
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Instance connect
+        id: novo
+        run: |
+          sh ./deploy/development.sh -d  XPTO -v 1.27.3 -n XPTO -u 1XPTO
