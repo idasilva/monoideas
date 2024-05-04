@@ -25,7 +25,7 @@ jobs:
           scopes: |
             ENG-\d+]
             IFS-\d+]
-          headerPattern: ^(\[)((ENG|IFS)-\d+\]) (.+)$
+          headerPattern: ^(\W*)((ENG|IFS)-\d+\]) (.*)$
           requireScope: true
           headerPatternCorrespondence: type, scope, subject
           subjectPattern: ^.*$
