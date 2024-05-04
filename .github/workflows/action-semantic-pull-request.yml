@@ -24,4 +24,4 @@ jobs:
           scopes: |
             ENG-\d+]
             IFS-\d+]
-          headerPattern: ^([)((ENG|IFS)-\d+\]) (.+)$
+          headerPattern: ^(\[)((ENG|IFS)-\d+\]) (.+)$
