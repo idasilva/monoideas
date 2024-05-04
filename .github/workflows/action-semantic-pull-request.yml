@@ -22,4 +22,6 @@ jobs:
           types: |
             [
           scopes: |
-            JIRA-\d+]
+            ENG-\d+]
+            IFS-\d+]
+          headerPattern: ^(\[)((ENG|IFS)-\d+\]) (.+)$
