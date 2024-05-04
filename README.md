@@ -1,1 +1,1 @@
-# aws-serverless
+# flexible repository
