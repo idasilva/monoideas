@@ -21,11 +21,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           types: |
-            [
+            IFS
+            ENG
           scopes: |
-            ENG-\d+]
-            IFS-\d+]
-          headerPattern: '^(\w*)((ENG|IFS)-\d+\])?: (.*)$'
+            \d+
           requireScope: true
-          headerPatternCorrespondence: type, scope, subject
-          subjectPattern: ^.*$
