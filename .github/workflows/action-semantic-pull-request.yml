@@ -4,11 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-permissions:
-  pull-requests: read
-
 jobs:
-  main:
+  check:
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:
