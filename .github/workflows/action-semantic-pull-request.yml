@@ -1,14 +1,23 @@
-name: "Lint Pull Request"
+name: Check build
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  check:
-    name: Validate PR title
+  build-validation:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 10
+
       - uses: Slashgear/action-check-pr-title@v4.3.0
+        name: Check Itera PR name Conventions
         with:
           regexp: "^(\W*)((ENG|IFS)-\d+\]) (.*)$"
