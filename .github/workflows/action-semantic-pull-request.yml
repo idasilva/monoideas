@@ -1,11 +1,11 @@
-name: Lint PR
+name: Pull request Conventions
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  pr-name-convention:
+  pr-title-checker:
     runs-on: ubuntu-latest
 
     permissions:
