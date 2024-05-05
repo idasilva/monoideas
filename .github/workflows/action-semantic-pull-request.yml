@@ -1,11 +1,11 @@
-name: Check build
+name: Lint PR
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
-  build-validation:
+  pr-title-checker:
     runs-on: ubuntu-latest
 
     permissions:
@@ -20,4 +20,4 @@ jobs:
       - uses: Slashgear/action-check-pr-title@v4.3.0
         name: Check Itera PR name Conventions
         with:
-          regexp: "^(\W*)((ENG|IFS)-\d+\]) (.*)$"
+          regexp: '^(\W*)((ENG|IFS)-\d+\]) (.*)$'
