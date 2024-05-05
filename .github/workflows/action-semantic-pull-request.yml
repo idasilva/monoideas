@@ -1,11 +1,11 @@
-name: Check build
+name: Lint PR
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build-validation:
+  pr-name-convention:
     runs-on: ubuntu-latest
 
     permissions:
