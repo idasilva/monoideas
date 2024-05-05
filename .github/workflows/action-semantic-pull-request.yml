@@ -20,4 +20,4 @@ jobs:
       - uses: Slashgear/action-check-pr-title@v4.3.0
         name: Check Itera PR name Conventions
         with:
-          regexp: "^(\W*)((ENG|IFS)-\d+\]) (.*)$"
+          regexp: '^(\W*)((ENG|IFS)-\d+\]) (.*)$'
