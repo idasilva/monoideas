@@ -1,4 +1,4 @@
-name: Pull request Conventions
+name: PR Conventions
 
 on:
   pull_request:
