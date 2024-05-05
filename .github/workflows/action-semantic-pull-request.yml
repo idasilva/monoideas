@@ -2,7 +2,7 @@ name: "Lint Pull Request"
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [main]
 
 permissions:
   pull-requests: read
@@ -15,4 +15,3 @@ jobs:
       - uses: Slashgear/action-check-pr-title@v4.3.0
         with:
           regexp: "^(\W*)((ENG|IFS)-\d+\]) (.*)$"
-          
