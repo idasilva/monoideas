@@ -1,4 +1,4 @@
-name: Staging Homolog
+name: Release
 
 on:
   release:
