@@ -1,0 +1,20 @@
+name: Staging Homolog
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-push:
+    name: Build & Push
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 10
