@@ -30,4 +30,4 @@ jobs:
       - name: deploy
         if: ${{ steps.branch-deploy.outputs.continue == 'true' && steps.branch-deploy.outputs.noop != 'true' }}
         run: |
-          DEPLOY ON DEVELOPMENT
+          echo "DEPLOY ON DEVELOPMENT"
