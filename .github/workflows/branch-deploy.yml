@@ -16,6 +16,12 @@ jobs:
     name: deploy
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+
     steps:
       - name: branch-deploy
         id: branch-deploy
