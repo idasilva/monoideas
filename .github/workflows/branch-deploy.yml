@@ -20,7 +20,7 @@ jobs:
       - name: branch-deploy
         id: branch-deploy
         uses: github/branch-deploy@v9.1.3
-         with:
+        with:
           trigger: ".deploy"
           environment: "development"
           stable_branch: "main"
