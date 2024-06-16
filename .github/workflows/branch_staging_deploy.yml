@@ -1,5 +1,4 @@
-name: DEPLOY STAGING
-
+name: STAGING
 
 on:
   issue_comment:

@@ -1,5 +1,4 @@
-name: DEPLOY DEVELOPMENT
-
+name: DEVELOPMENT
 
 on:
   issue_comment:
