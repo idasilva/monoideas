@@ -24,6 +24,8 @@ jobs:
         with:
           trigger: ".deploy"
           environment: "development"
+          environment_targets: "production,development,staging"
+          disable_naked_commands: "true"
           stable_branch: "main"
 
       - name: Checkout
