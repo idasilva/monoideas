@@ -1,4 +1,4 @@
-name: branch-deploy
+name: DEPLOY STAGING
 
 on:
   issue_comment:
