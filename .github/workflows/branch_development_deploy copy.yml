@@ -14,7 +14,11 @@ permissions:
 jobs:
   deploy:
     name: deploy
-    if: ${{ github.event.issue.pull_request }}
+    if:  ${{ github.event.issue.pull_request &&
+      (startsWith(github.event.comment.body, '.deploy development') ||
+      startsWith(github.event.comment.body, '.lock') ||
+      startsWith(github.event.comment.body, '.help') ||
+      startsWith(github.event.comment.body, '.unlock')) }}
     runs-on: ubuntu-latest
 
     steps:
