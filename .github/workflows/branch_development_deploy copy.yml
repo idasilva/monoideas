@@ -1,5 +1,4 @@
-name: branch-deploy
-
+name: DEVELOPMENT
 
 on:
   issue_comment:
