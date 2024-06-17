@@ -37,7 +37,5 @@ jobs:
       - name: deploy
         if: ${{ steps.branch-deploy.outputs.continue == 'true' && steps.branch-deploy.outputs.noop != 'true' }}
         run: |
-          echo ${{ fromJson('{ "development": "CONTA A", "staging": "CONTA B" }')[development]}}
+          echo ${{ fromJson('{ "development": "CONTA A", "staging": "CONTA B" }')["development"]}}
           ls -a
-
-  
