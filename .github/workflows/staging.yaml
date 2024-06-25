@@ -22,4 +22,4 @@ jobs:
       - name: DEPLOY
         id: novo
         run: |
-          "DEPLOY STAGING"
+          echo "DEPLOY STAGING"

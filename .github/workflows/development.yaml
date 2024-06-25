@@ -21,4 +21,4 @@ jobs:
       - name: DEPLOY
         id: novo
         run: |
-          "DEPLOY DEVELOPMENT"
+         echo "DEPLOY DEVELOPMENT"
