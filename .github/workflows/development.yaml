@@ -26,7 +26,9 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.TOKEN }}
-          append_to_pre_release_tag: "rc"
+          default_bump: "patch"
+          default_prerelease_bump: "prepatch"
+
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
