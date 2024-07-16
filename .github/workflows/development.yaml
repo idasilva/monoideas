@@ -37,3 +37,11 @@ jobs:
           draft: true
           prerelease: false
           generate_release_notes: true
+          body: |
+            ## Info
+            Commit ${{ github.sha }} was deployed to `staging`. [See code diff](${{ github.event.compare }}).
+
+            It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }}).
+
+            ## How to Promote?
+            In order to promote this to staging, edit the draft and press **"Publish pre-release"**.
