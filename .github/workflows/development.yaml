@@ -2,7 +2,7 @@ name: Developmente Deploy
 
 on:
   push:
-    branches: semantic-version111
+    branches: semantic-version
 
 jobs: 
   build:
