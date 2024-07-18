@@ -36,6 +36,7 @@ jobs:
           tag_name: ${{ steps.semantic.outputs.new_tag }}
           draft: false
           prerelease: false
+          make_latest: false
           generate_release_notes: true
           body: |
             ## Info
