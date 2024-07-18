@@ -33,7 +33,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.TOKEN }}
-          tag_name: ${{ steps.semantic.outputs.new_tag }}
+          tag_name: draft-${{ steps.semantic.outputs.new_tag }}
           draft: true
           prerelease: false
           make_latest: false
