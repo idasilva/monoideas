@@ -15,10 +15,33 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: DEPLOY
         id: novo
         run: |
          echo "DEPLOY DEVELOPMENT"
+
+      - name: Bump version and push tag
+        id: semantic
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          release_branches: .*
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+          tag_name: ${{ steps.semantic.outputs.new_tag }}
+          draft: false
+          prerelease: false
+          make_latest: false
+          generate_release_notes: true
+          body: |
+            ## Info
+            Commitr ${{ github.sha }} was deployed to `development`. [See code diff](${{ github.event.compare }}).
+
+            It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }}).
+
+            ## How to Promote?
+            In order to promote this to staging, edit the draft and press **"Publish pre-release"**.
