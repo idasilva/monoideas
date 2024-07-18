@@ -40,7 +40,7 @@ jobs:
           generate_release_notes: true
           body: |
             ## Info
-            Commit ${{ github.sha }} was deployed to `development`. [See code diff](${{ github.event.compare }}).
+            Commitr ${{ github.sha }} was deployed to `development`. [See code diff](${{ github.event.compare }}).
 
             It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }}).
 
