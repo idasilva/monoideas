@@ -2,7 +2,7 @@ name: Developmente Deploy
 
 on:
   push:
-    branches: semantic-version
+    branches: main
 
 jobs: 
   build:
@@ -34,7 +34,7 @@ jobs:
           token: ${{ secrets.TOKEN }}
           tag_name: ${{ steps.semantic.outputs.new_tag }}
           draft: true
-          prerelease: true
+          prerelease: false
           make_latest: false
           generate_release_notes: true
           body: |
