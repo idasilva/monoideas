@@ -28,7 +28,6 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           release_branches: .*
 
-
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
