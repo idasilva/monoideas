@@ -23,7 +23,16 @@ jobs:
       #  run: |
       #    echo "GHE_HOST=${GITHUB_SERVER_URL##https:\/\/}" >> $GITHUB_ENV
 
+      - name: Bump version and push tag
+        id: semantic
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          release_branches: .*
+
       - uses: release-drafter/release-drafter@v6
         # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
+        with:
+          tag: ${{ steps.semantic.outputs.new_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

@@ -1,17 +1,6 @@
 commitish: main
 name-template: '$RESOLVED_VERSION'
 tag-template: '$RESOLVED_VERSION'
-version-resolver:
-  major:
-    labels:
-      - 'major'
-  minor:
-    labels:
-      - 'minor'
-  patch:
-    labels:
-      - 'patch'
-  default: patch
 template: |
   ## Info
   This Draft was deployed to `development`.
