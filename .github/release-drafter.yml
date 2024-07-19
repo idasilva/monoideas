@@ -2,6 +2,12 @@ commitish: main
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 template: |
-  ## What’s Changed
+  ## Info
+  Commit ${{ github.sha }} was deployed to `development`. [See code diff](${{ github.event.compare }}).
+
+  It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }}).
+
+  ## How to Promote?
+  In order to promote this to staging, edit the draft and press **"Publish pre-release"**.
 
   $CHANGES
