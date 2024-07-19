@@ -2,7 +2,7 @@ name: Developmente Deploy
 
 on:
   push:
-    branches: main
+    branches: mainss
 
 jobs: 
   build:
