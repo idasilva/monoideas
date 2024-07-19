@@ -33,9 +33,9 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
           tag_name: ${{ steps.semantic.outputs.new_tag }}
-          draft: true
+          draft: false
           prerelease: false
-          make_latest: true
+          make_latest: false
           generate_release_notes: true
           body: |
             ## Info
