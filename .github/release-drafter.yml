@@ -8,5 +8,5 @@ template: |
   ## How to Promote?
   In order to promote this to  `staging`, edit the draft as a **"pre-release"**.
 
-  ## Full Changelog:
+  ## Changelog:
   $CHANGES
