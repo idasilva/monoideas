@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println("aq")
+	fmt.Println("aq222222")
 	cmd.Execute()
 }
