@@ -3,11 +3,10 @@ name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 template: |
   ## Info
-  Commit ${{ github.sha }} was deployed to `development`. [See code diff](${{ github.event.compare }}).
-
-  It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }}).
+  This Draft was deployed to `development`.
 
   ## How to Promote?
-  In order to promote this to staging, edit the draft and press **"Publish pre-release"**.
+  In order to promote this to  `staging`, edit the draft as a **"pre-release"**.
 
+  ## Full Changelog:
   $CHANGES
