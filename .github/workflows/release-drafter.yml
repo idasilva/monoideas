@@ -16,6 +16,7 @@ jobs:
       # write permission is required for autolabeler
       # otherwise, read permission is required at least
       pull-requests: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
       # (Optional) GitHub Enterprise requires GHE_HOST variable set
@@ -33,7 +34,10 @@ jobs:
       #     custom_release_rules: "nao:patch"
       #     append_to_pre_release_tag: rc
 
-
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: '0'
       - name: Bump version and push tag
         id: semantic
         uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
