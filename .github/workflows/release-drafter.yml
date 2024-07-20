@@ -44,6 +44,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }} # if you don't want to set write permissions use a PAT token
           WITH_V: true
           PRERELEASE: true
+          PRERELEASE_SUFFIX: rc
+          RELEASE_BRANCHES: release.*
 
       - uses: release-drafter/release-drafter@v6
         # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
