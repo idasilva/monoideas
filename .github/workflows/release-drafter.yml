@@ -28,12 +28,13 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.TOKEN }}
-          release_branches: .*
+          # release_branches: .*
+          append_to_pre_release_tag: draft
 
       - uses: release-drafter/release-drafter@v6
         # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
         with:
-          prerelease: false
+          # prerelease: false
           tag: ${{ steps.semantic.outputs.new_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
