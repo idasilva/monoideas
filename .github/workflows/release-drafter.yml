@@ -30,19 +30,20 @@ jobs:
       #     github_token: ${{ secrets.TOKEN }}
       #     default_bump: false
       #     release_branches: release.*
-      #     custom_release_rules: "nao:patch"
       #     append_to_pre_release_tag: rc
 
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
           fetch-depth: '0'
+
       - name: Bump version and push tag
         id: semantic
         uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }} # if you don't want to set write permissions use a PAT token
           WITH_V: true
+          DEFAULT_BUMP: false
           PRERELEASE: true
           PRERELEASE_SUFFIX: rc
           RELEASE_BRANCHES: release.*
