@@ -30,6 +30,7 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           default_bump: false
           release_branches: release.*
+          custom_release_rules: "NAO USAR O CONVENSIONAL COMMIT"
           append_to_pre_release_tag: rc
 
       - uses: release-drafter/release-drafter@v6
