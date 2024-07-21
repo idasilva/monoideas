@@ -70,6 +70,7 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
           title: "[ENG-000] Bump version"
+          branch: release/${{ github.ref_name }}
 
       - name: Enable Pull Request Automerge
         if: steps.cpr.outputs.pull-request-operation == 'created'
