@@ -54,6 +54,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.TOKEN }}
           ref: main
 
       - run: echo "${{ github.ref_name }}" > ./VERSION
