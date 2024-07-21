@@ -3,7 +3,7 @@ name: Bump Version
 on:
   push:
     branches: main
-    paths:
+    paths-ignore:
       - VERSION
 
 jobs: 

@@ -3,9 +3,6 @@ name: Developmente Deploy
 on:
   push:
     branches: main
-    paths-ignore:
-      - VERSION
-
 jobs: 
   build:
     runs-on: ubuntu-latest
