@@ -37,19 +37,22 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
-      - uses: actions/checkout@v4
-        with:
-          path: '.'
+      # - uses: actions/checkout@v4
+      #   with:
+      #     path: '.'
 
-      # You can make whatever type of change to the repo...
-      - run: echo "${{ github.ref_name }}" > ./VERSION
+      # # You can make whatever type of change to the repo...
+      # - run: echo "${{ github.ref_name }}" > ./VERSION
 
-      # ...and then use the action as you would normally do, but providing the path to the repo
+      # # ...and then use the action as you would normally do, but providing the path to the repo
+      # - uses: EndBug/add-and-commit@v9
+      #   with:
+      #     message: 'Bump version...'
+      #     add: 'VERSION --force'
+      #     cwd: './'
       - uses: EndBug/add-and-commit@v9
         with:
-          message: 'Bump version...'
-          add: 'VERSION --force'
-          cwd: './'
+          message: Bump version...
 
       - name: DEPLOY
         id: novo
