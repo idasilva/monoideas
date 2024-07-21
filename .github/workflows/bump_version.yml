@@ -1,0 +1,41 @@
+name: Bump Version
+
+on:
+  push:
+    branches: main
+    paths:
+      - VERSION
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: '0'
+
+      - name: Bump version and push tag
+        id: semantic
+        uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }} # if you don't want to set write permissions use a PAT token
+          WITH_V: true
+          DEFAULT_BUMP: false
+          PRERELEASE: true
+          PRERELEASE_SUFFIX: rc
+          RELEASE_BRANCHES: release.*
+
+      - uses: release-drafter/release-drafter@v6
+        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
+        with:
+          prerelease: true
+          tag: ${{ steps.semantic.outputs.new_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
