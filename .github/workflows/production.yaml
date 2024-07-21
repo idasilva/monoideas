@@ -50,6 +50,10 @@ jobs:
       #     message: 'Bump version...'
       #     add: 'VERSION --force'
       #     cwd: './'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: EndBug/add-and-commit@v9
         with:
           message: Bump version...
