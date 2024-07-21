@@ -28,6 +28,8 @@ jobs:
           PRERELEASE: true
           PRERELEASE_SUFFIX: rc
           RELEASE_BRANCHES: release.*
+          FORCE_WITHOUT_CHANGES_PRE: true
+
 
       - uses: release-drafter/release-drafter@v6
         # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
