@@ -2,7 +2,7 @@ name: Developmente Deploy
 
 on:
   push:
-    branches: mainss
+    branches: main
 
 jobs: 
   build:
@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: '0'
 
       - name: DEPLOY
         id: novo
@@ -23,25 +26,52 @@ jobs:
 
       - name: Bump version and push tag
         id: semantic
-        uses: mathieudutour/github-tag-action@v6.1
+        uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }} # if you don't want to set write permissions use a PAT token
+          WITH_V: true
+          DEFAULT_BUMP: false
+          PRERELEASE: true
+          PRERELEASE_SUFFIX: rc
+          RELEASE_BRANCHES: release.*
+
+      - uses: release-drafter/release-drafter@v6
+        # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
         with:
-          github_token: ${{ secrets.TOKEN }}
-          release_branches: .*
+          prerelease: true
+          tag: ${{ steps.semantic.outputs.new_tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.TOKEN }}
-          tag_name: ${{ steps.semantic.outputs.new_tag }}
-          draft: true
-          prerelease: false
-          make_latest: false
-          generate_release_notes: true
-          body: |
-            ## Info
-            Commitr ${{ github.sha }} was deployed to `development`. [See code diff](${{ github.event.compare }}).
+      - name: Purge cache
+        uses: jakejarvis/cloudflare-purge-action@master
+        env:
+          # Zone is required by both authentication methods
+          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
 
-            It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }}).
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
 
-            ## How to Promote?
-            In order to promote this to staging, edit the draft and press **"Publish pre-release"**.
+      # - name: Bump version and push tag
+      #   id: semantic
+      #   uses: mathieudutour/github-tag-action@v6.1
+      #   with:
+      #     github_token: ${{ secrets.TOKEN }}
+      #     release_branches: .*
+
+      # - name: Create Release
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     token: ${{ secrets.TOKEN }}
+      #     tag_name: ${{ steps.semantic.outputs.new_tag }}
+      #     draft: true
+      #     prerelease: false
+      #     make_latest: false
+      #     generate_release_notes: true
+      #     body: |
+      #       ## Info
+      #       Commitr ${{ github.sha }} was deployed to `development`. [See code diff](${{ github.event.compare }}).
+
+      #       It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }}).
+
+      #       ## How to Promote?
+      #       In order to promote this to staging, edit the draft and press **"Publish pre-release"**.
