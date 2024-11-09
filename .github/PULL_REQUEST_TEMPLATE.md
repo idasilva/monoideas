@@ -1,3 +1,11 @@
+---
+name: "Feature Request"
+about: "Request a feature"
+title: "TESTANDO"
+labels: "feature-request, not-reviewed"
+assignees: "derekprior, tooomm"
+---
+
 <!--
 Por favor, garanta que você leu e seguiu todos os processos e boas práticas.....
 -->
