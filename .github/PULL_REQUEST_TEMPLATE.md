@@ -1,10 +1,11 @@
 ---
-name: "Feature Request"
-about: "Request a feature"
-title: "TESTANDO"
-labels: "feature-request, not-reviewed"
-assignees: "derekprior, tooomm"
+name: Pull Request
+about: Create a pull request to contribute to the project
+title: "[PR] - Brief Description of Changes"
+labels: ''
+assignees: ''
 ---
+
 
 <!--
 Por favor, garanta que você leu e seguiu todos os processos e boas práticas.....
