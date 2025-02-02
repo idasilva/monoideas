@@ -54,7 +54,7 @@ Resources:
                 type: aws
                 httpMethod: POST
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:states:action/StartSyncExecution"
-                credentials: !Sub "arn:aws:iam::560978416398:role/MyApiGatewayRole"
+                credentials: !Sub "arn:aws:iam::x:role/MyApiGatewayRole"
                 requestTemplates:
                   application/json: !Sub |-
                     {

@@ -55,7 +55,7 @@ Resources:
                 uri:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:states:action/StartSyncExecution
                 credentials:
-                  Fn::Sub: arn:aws:iam::560978416398:role/MyApiGatewayRole
+                  Fn::Sub: arn:aws:iam::x:role/MyApiGatewayRole
                 requestTemplates:
                   application/json:
                     Fn::Sub: '{

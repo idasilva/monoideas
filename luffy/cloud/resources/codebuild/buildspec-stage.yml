@@ -22,7 +22,7 @@ phases:
     commands:
       # Updating kubectl with your EKS Cluster              
       - echo "Update Kube Config configuration"      
-      - aws eks update-kubeconfig --name dev --role-arn arn:aws:iam::560978416398:role/EksCodeBuildkubectlRole
+      - aws eks update-kubeconfig --name dev --role-arn arn:aws:iam::x:role/EksCodeBuildkubectlRole
       - echo "Current Context"  
       - kubectl config current-context
       # Show time, applying manifests changes using kubectl

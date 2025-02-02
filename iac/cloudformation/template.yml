@@ -12,7 +12,7 @@ Resources:
     Properties:
       Name: dev
       Version: "1.27"
-      RoleArn: "arn:aws:iam::560978416398:role/eksClusterRole"
+      RoleArn: "arn:aws:iam::x:role/eksClusterRole"
       ResourcesVpcConfig:
         SecurityGroupIds:
           - sg-05c357df9ac81ebc5
@@ -29,7 +29,7 @@ Resources:
     Type: 'AWS::EKS::Nodegroup'
     Properties:
       ClusterName: dev
-      NodeRole: arn:aws:iam::560978416398:role/AmazonEKSNodeRole
+      NodeRole: arn:aws:iam::x:role/AmazonEKSNodeRole
       ScalingConfig:
         MinSize: 1
         DesiredSize: 1
@@ -49,6 +49,6 @@ Resources:
           - Effect: Allow
             Principal:
               AWS:
-                - arn:aws:iam::560978416398:role/deploy-project-role-stage
+                - arn:aws:iam::x:role/deploy-project-role-stage
             Action:
               - 'sts:AssumeRole'
