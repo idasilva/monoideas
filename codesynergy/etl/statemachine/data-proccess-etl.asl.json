@@ -6,7 +6,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
-        "FunctionName": "arn:aws:lambda:us-east-1:560978416398:function:data-proccess-etl-job:$LATEST",
+        "FunctionName": "arn:aws:lambda:us-east-1:x:function:data-proccess-etl-job:$LATEST",
         "Payload.$": "$"
       },
       "Next": "File Archive",
@@ -40,7 +40,7 @@
             "OutputPath": "$.Payload",
             "Parameters": {
               "Payload.$": "$",
-              "FunctionName": "arn:aws:lambda:us-east-1:560978416398:function:data-insights-etl-job:$LATEST"
+              "FunctionName": "arn:aws:lambda:us-east-1:x:function:data-insights-etl-job:$LATEST"
             },
             "Next": "Map"
           },
@@ -58,7 +58,7 @@
                   "OutputPath": "$.Payload",
                   "Parameters": {
                     "Payload.$": "$",
-                    "FunctionName": "arn:aws:lambda:us-east-1:560978416398:function:data-persistent-etl-job:$LATEST"
+                    "FunctionName": "arn:aws:lambda:us-east-1:x:function:data-persistent-etl-job:$LATEST"
                   },
                   "Catch": [
                     {

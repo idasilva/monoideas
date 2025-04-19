@@ -5,7 +5,7 @@ data "aws_eks_cluster" "cluster" {
 }
 
 resource "aws_efs_file_system" "efs" {
-  creation_token = "${terraform.workspace}-data-efs"
+  creation_token   = "${terraform.workspace}-data-efs"
   performance_mode = "generalPurpose"
 
   lifecycle_policy {
@@ -19,29 +19,29 @@ resource "aws_efs_file_system" "efs" {
 }
 
 resource "aws_security_group" "efs" {
-   name = "${terraform.workspace}-efs-sg"
-   description= "Allow inbound efs traffic from Kubernetes Subnet"
-   vpc_id = local.cluster_vpc_id
+  name        = "${terraform.workspace}-efs-sg"
+  description = "Allow inbound efs traffic from Kubernetes Subnet"
+  vpc_id      = local.cluster_vpc_id
 
-   ingress {
-     cidr_blocks = local.cluster_subsnets_cirds
-     from_port = 2049
-     to_port = 2049 
-     protocol = "tcp"
-   }     
-        
-   egress {
-     cidr_blocks = local.cluster_subsnets_cirds
-     from_port = 0
-     to_port = 0
-     protocol = "-1"
-   }
- }
+  ingress {
+    cidr_blocks = local.cluster_subsnets_cirds
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+  }
+
+  egress {
+    cidr_blocks = local.cluster_subsnets_cirds
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
+}
 
 resource "aws_efs_mount_target" "efs_mount_target" {
-  count = length(local.cluster_subnets)
-  file_system_id = aws_efs_file_system.efs.id
-  subnet_id      = local.cluster_subnets[count.index]
+  count           = length(local.cluster_subnets)
+  file_system_id  = aws_efs_file_system.efs.id
+  subnet_id       = local.cluster_subnets[count.index]
   security_groups = [aws_security_group.efs.id]
 }
 
@@ -77,7 +77,7 @@ storageClasses:
 EOF
   ]
 
-  depends_on = [ aws_efs_file_system.efs ]
+  depends_on = [aws_efs_file_system.efs]
 }
 
 module "attach_efs_csi_role" {

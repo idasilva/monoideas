@@ -28,4 +28,4 @@ Resources:
             Principal:
               AWS: 'arn:aws:iam::123456789012:user/opensearch-user'
             Action: 'es:*'
-            Resource: 'arn:aws:es:us-east-1:846973539254:domain/test/*'
+            Resource: 'arn:aws:es:us-east-1:x:domain/test/*'

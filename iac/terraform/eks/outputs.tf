@@ -17,11 +17,3 @@ output "cluster_name" {
   description = "Kubernetes Cluster Name"
   value       = module.eks_cluster.cluster_name
 }
-
-output "efs_id" {
-  value = aws_efs_file_system.efs.id
-}
-
-output "efs_dns_name" {
-  value = aws_efs_file_system.efs.dns_name
-}

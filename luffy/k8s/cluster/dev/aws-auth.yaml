@@ -6,12 +6,12 @@ metadata:
   namespace: kube-system
 data:
   mapRoles: |
-    - rolearn: arn:aws:iam::560978416398:role/EksCodeBuildkubectlRole
+    - rolearn: arn:aws:iam::x:role/EksCodeBuildkubectlRole
       username: build
       groups:
         - system:masters
     - groups:
       - system:bootstrappers
       - system:nodes
-      rolearn: arn:aws:iam::560978416398:role/AmazonEKSNodeRole
+      rolearn: arn:aws:iam::x:role/AmazonEKSNodeRole
       username: system:node:{{EC2PrivateDNSName}}
