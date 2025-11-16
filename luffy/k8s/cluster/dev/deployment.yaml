@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: luffy
-          image: x.dkr.ecr.us-east-1.amazonaws.com/luffy-services:0.2.0
+          image: xxxx.dkr.ecr.us-east-1.amazonaws.com/luffy-services:0.3.0
           ports:
             - containerPort: 8080
           # command: ['main', 'server']
